@@ -22,12 +22,17 @@
   },
   "homepage": "https://github.com/wearetheledger/fabric-network-boilerplate#readme",
   "dependencies": {
-    "@types/node": "^8.5.8",
-    "fabric-shim": "unstable",
-    "log4js": "^2.5.3"
+    "@types/google-protobuf": "^3.2.7",
+    "@types/lodash": "^4.14.104",
+    "fabric-shim": "1.1.0-alpha",
+    "lodash": "^4.17.5",
+    "log4js": "^2.5.3",
+    "winston": "^2.4.0"
   },
   "devDependencies": {
     "@types/express-serve-static-core": "4.0.49",
+    "@types/node": "^8.5.8",
+    "@types/winston": "^2.3.8",
     "chai": "^4.1.2",
     "mocha": "^4.1.0",
     "nodemon": "^1.12.1",

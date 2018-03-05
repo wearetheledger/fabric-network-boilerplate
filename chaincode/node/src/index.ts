@@ -1,38 +1,11 @@
 import shim = require("fabric-shim");
-import { ChaincodeInterface, Stub } from "fabric-shim";
+import { Stub } from "fabric-shim";
+import { Chaincode } from "./node-chaincode-utils/Chaincode";
+import { TransactionHelper } from "./node-chaincode-utils/ChaincodeStub";
 
-let Chaincode = class Chaincode implements ChaincodeInterface {
+let MyChaincode = class MyChaincode extends Chaincode {
 
-    // The Init method is called when the Smart Contract 'fabcar' is instantiated by the blockchain network
-    // Best practice is to have any Ledger initialization in separate function -- see initLedger()
-    async Init(stub: Stub) {
-        console.info('=========== Instantiated fabcar chaincode ===========');
-
-        return shim.success();
-    }
-
-    // The Invoke method is called as a result of an application request to run the Smart Contract
-    // 'fabcar'. The calling application program has also specified the particular smart contract
-    // function to be called, with arguments
-    async Invoke(stub: Stub) {
-        let ret = stub.getFunctionAndParameters();
-        console.info(ret);
-
-        let method = this[ret.fcn];
-        if (!method) {
-            console.error('no function of name:' + ret.fcn + ' found');
-            throw new Error('Received unknown function ' + ret.fcn + ' invocation');
-        }
-        try {
-            let payload = await method(stub, ret.params);
-            return shim.success(payload);
-        } catch (err) {
-            console.log(err);
-            return shim.error(err);
-        }
-    }
-
-    async queryCar(stub: Stub, args: string[]) {
+    async queryCar(stub: Stub, txHelper: TransactionHelper, args: string[]) {
         if (args.length != 1) {
             throw new Error('Incorrect number of arguments. Expecting CarNumber ex: CAR01');
         }
@@ -46,7 +19,7 @@ let Chaincode = class Chaincode implements ChaincodeInterface {
         return carAsBytes;
     }
 
-    async initLedger(stub: Stub, args: string[]) {
+    async initLedger(stub: Stub, txHelper: TransactionHelper, args: string[]) {
         console.info('============= START : Initialize Ledger ===========');
         let cars = [];
         cars.push({
@@ -120,7 +93,7 @@ let Chaincode = class Chaincode implements ChaincodeInterface {
         console.info('============= END : Initialize Ledger ===========');
     }
 
-    async createCar(stub: Stub, args: string[]) {
+    async createCar(stub: Stub, txHelper: TransactionHelper, args: string[]) {
         console.info('============= START : Create Car ===========');
         if (args.length != 5) {
             throw new Error('Incorrect number of arguments. Expecting 5');
@@ -144,7 +117,7 @@ let Chaincode = class Chaincode implements ChaincodeInterface {
         console.info('============= END : Create Car ===========');
     }
 
-    async queryAllCars(stub: Stub, args: string[]) {
+    async queryAllCars(stub: Stub, txHelper: TransactionHelper, args: string[]) {
 
         let startKey = 'CAR0';
         let endKey = 'CAR999';
@@ -177,14 +150,14 @@ let Chaincode = class Chaincode implements ChaincodeInterface {
         }
     }
 
-    async changeCarOwner(stub: Stub, args: string[]) {
+    async changeCarOwner(stub: Stub, txHelper: TransactionHelper, args: string[]) {
         console.info('============= START : changeCarOwner ===========');
         if (args.length != 2) {
             throw new Error('Incorrect number of arguments. Expecting 2');
         }
 
         let carAsBytes = await stub.getState(args[0]);
-        let car = JSON.parse(carAsBytes);
+        let car = JSON.parse(carAsBytes.toString());
         car.owner = args[1];
 
         await stub.putState(args[0], Buffer.from(JSON.stringify(car)));
@@ -192,4 +165,4 @@ let Chaincode = class Chaincode implements ChaincodeInterface {
     }
 };
 
-shim.start(new Chaincode());
+shim.start(new MyChaincode());

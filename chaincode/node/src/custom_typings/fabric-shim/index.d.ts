@@ -1,6 +1,14 @@
+// Type definitions for fabric-shim 1.1.0-alpha
+// Project: https://github.com/hyperledger/fabric-chaincode-node
+// Definitions by: TheLedger <https://github.com/wearetheledgerr>
+// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
+
+/// <reference types="node" />
+
 declare module "fabric-shim" {
 
     import { Logger } from "log4js";
+    import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 
     export function error(...args: any[]): ErrorResponse;
 
@@ -39,7 +47,6 @@ declare module "fabric-shim" {
     }
 
     type ProposalCreator = { [fieldName: string]: any, mspid: string };
-
 
     type SignedProposal = {
         signature: Buffer
@@ -115,7 +122,7 @@ declare module "fabric-shim" {
 
         getSignedProposal(): SignedProposal;
 
-        getState(key: string): Promise<string>;
+        getState(key: string): Promise<Buffer>;
 
         getStateByPartialCompositeKey(objectType: string, attributes: string[]): Promise<Iterators.StateQueryIterator>;
 
@@ -127,7 +134,7 @@ declare module "fabric-shim" {
 
         getTxID(): string;
 
-        getTxTimestamp(): void;
+        getTxTimestamp(): Timestamp;
 
         invokeChaincode(chaincodeName: string, args: Buffer[], channel: string): Promise<Response>;
 
@@ -235,16 +242,18 @@ declare module "fabric-shim" {
             removeListener(type: any, listener: any): any;
 
             setMaxListeners(n: any): any;
+
+            next(): any
         }
 
         class HistoryQueryIterator extends Iterator {
 
-            next(...args: any[]): void;
+            next(): void;
 
         }
 
         class StateQueryIterator extends Iterator {
-            next(...args: any[]): { value: any, done: boolean };
+            next(): { value: any, done: boolean };
 
         }
 

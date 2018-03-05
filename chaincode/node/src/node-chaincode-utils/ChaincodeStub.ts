@@ -54,7 +54,7 @@ export class TransactionHelper {
      */
     async deleteAllReturnedByQuery(query: string | object) {
 
-        const allResults = await this.getQueryResultAsList(query, true);
+        const allResults = <KV[]>(await this.getQueryResultAsList(query, true));
 
         return Promise.all(allResults.map((record: KV) => this.stub.deleteState(record.key)));
     }

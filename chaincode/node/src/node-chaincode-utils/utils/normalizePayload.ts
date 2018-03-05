@@ -1,4 +1,4 @@
-import _ from "lodash"
+import * as _ from "lodash"
 
 export const normalizePayload = (value: any): any => {
 
@@ -7,11 +7,11 @@ export const normalizePayload = (value: any): any => {
     } else if (_.isString(value)) {
         return value;
     } else if (_.isArray(value)) {
-        return _.map(value, (v) => {
+        return _.map(value, (v: object) => {
             return normalizePayload(v);
         });
     } else if (_.isObject(value)) {
-        return _.mapValues(value, (v) => {
+        return _.mapValues(value, (v: any) => {
             return normalizePayload(v);
         });
     }

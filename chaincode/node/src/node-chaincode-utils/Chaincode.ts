@@ -73,12 +73,11 @@ export class Chaincode implements ChaincodeInterface {
             });
         }
 
-
         try {
 
             let payload = await method.call(this, stub, this.getTransactionHelperFor(stub), parsedParameters);
 
-            if (!Buffer.isBuffer(payload)) {
+            if (payload && !Buffer.isBuffer(payload)) {
                 payload = Buffer.from(JSON.stringify(normalizePayload(payload)));
             }
 

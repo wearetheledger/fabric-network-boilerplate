@@ -1,5 +1,5 @@
 import { KV, Stub } from 'fabric-shim';
-import { Log } from './utils/logger';
+import { Helpers } from './utils/helpers';
 import { Transform } from './utils/datatransform';
 import * as _ from 'lodash';
 
@@ -25,7 +25,7 @@ export class TransactionHelper {
             queryString = <string>query;
         }
 
-        Log.debug(`Query: ${queryString}`);
+        Helpers.log(`Query: ${queryString}`);
 
         const iterator = await this.stub.getQueryResult(queryString);
 
@@ -45,7 +45,7 @@ export class TransactionHelper {
      */
     async getStateByRangeAsList(startKey: string, endKey: string): Promise<KV[]> {
 
-        Log.debug(`StartKey: ${startKey} - EndKey: ${endKey}`);
+        Helpers.log(`StartKey: ${startKey} - EndKey: ${endKey}`);
 
         const iterator = await this.stub.getStateByRange(startKey, endKey);
 
@@ -135,7 +135,7 @@ export class TransactionHelper {
             bufferedPayload = Buffer.from(JSON.stringify(payload));
         }
 
-        Log.debug(`Setting Event ${name} with payload ${JSON.stringify(payload)}`);
+        Helpers.log(`Setting Event ${name} with payload ${JSON.stringify(payload)}`);
 
         this.stub.setEvent(name, bufferedPayload);
     }

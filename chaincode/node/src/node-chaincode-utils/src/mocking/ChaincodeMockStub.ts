@@ -1,8 +1,17 @@
-import { ChaincodeReponse, Iterators, KV, MockStub, ProposalCreator, SignedProposal } from 'fabric-shim';
+import {
+    ChaincodeReponse,
+    Iterators,
+    KV,
+    MockStub,
+    ProposalCreator,
+    SignedProposal,
+    SplitCompositekey
+} from 'fabric-shim';
 import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
 import { MockStateQueryIterator } from './MockStateQueryIterator';
 import { Chaincode } from '../Chaincode';
 import { ChaincodeProposalCreator } from './ChaincodeProposalCreator';
+import { CompositeKeys } from './CompositeKeys';
 
 const defaultUserCert = '-----BEGIN CERTIFICATE-----' +
     'MIIB6TCCAY+gAwIBAgIUHkmY6fRP0ANTvzaBwKCkMZZPUnUwCgYIKoZIzj0EAwIw' +
@@ -143,14 +152,33 @@ export class ChaincodeMockStub implements MockStub {
 
     getStateByRange(startKey: string, endKey: string): Promise<Iterators.StateQueryIterator> {
 
+        function strcmp(a: string, b: string) {
+            if (a.toString() < b.toString()) {
+                return -1;
+            }
+            if (a.toString() > b.toString()) {
+                return 1;
+            }
+            return 0;
+        }
+
         const items: KV[] = Object.keys(this.state)
-            .filter((k: string) => startKey <= k && endKey >= k)
+            .filter((k: string) => {
+                const comp1 = strcmp(k, startKey);
+                const comp2 = strcmp(k, endKey);
+
+                return (comp1 >= 0 && comp2 <= 0) || (startKey == '' && endKey == '');
+            })
             .map((k: string): KV => {
                 return {
                     key: k,
                     value: this.state[k]
                 };
             });
+
+        console.log('startKey', startKey);
+        console.log('endKey', endKey, items);
+        console.log('state', this.state);
 
         return Promise.resolve(new MockStateQueryIterator(items));
 
@@ -169,16 +197,18 @@ export class ChaincodeMockStub implements MockStub {
         return undefined;
     }
 
-    createCompositeKey(objectType: string, attributes: string[]): string {
-        return undefined;
-    }
-
-    splitCompositeKey(compositeKey: string): { objectType: string; attributes: string[] } {
-        return undefined;
-    }
-
     getStateByPartialCompositeKey(objectType: string, attributes: string[]): Promise<Iterators.StateQueryIterator> {
-        return undefined;
+        const partialCompositeKey = CompositeKeys.createCompositeKey(objectType, attributes);
+
+        return this.getStateByRange(partialCompositeKey, partialCompositeKey + CompositeKeys.MAX_UNICODE_RUNE_VALUE);
+    }
+
+    createCompositeKey(objectType: string, attributes: string[]): string {
+        return CompositeKeys.createCompositeKey(objectType, attributes);
+    }
+
+    splitCompositeKey(compositeKey: string): SplitCompositekey {
+        return CompositeKeys.splitCompositeKey(compositeKey);
     }
 
     getSignedProposal(): SignedProposal {

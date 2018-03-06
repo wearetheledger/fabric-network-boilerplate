@@ -156,7 +156,7 @@ declare module 'fabric-shim' {
         putState(key: string, value: Buffer): Promise<any>; // TODO promise contains what?????
         setEvent(name: string, payload: Buffer): void;
 
-        splitCompositeKey(compositeKey: string): { objectType: string, attributes: string[] };
+        splitCompositeKey(compositeKey: string): SplitCompositekey;
 
         static RESPONSE_CODE: {
             ERROR: number;
@@ -164,6 +164,11 @@ declare module 'fabric-shim' {
             OK: number;
         };
 
+    }
+
+    interface SplitCompositekey {
+        objectType: string,
+        attributes: string[]
     }
 
 
@@ -254,9 +259,14 @@ declare module 'fabric-shim' {
         }
 
         interface StateQueryIterator extends Iterator {
-            next(): Promise<{ value: any, done: boolean }>;
+            next(): Promise<NextResult>;
         }
 
+    }
+
+    interface NextResult {
+        value: KV,
+        done: boolean
     }
 
     interface X509 {

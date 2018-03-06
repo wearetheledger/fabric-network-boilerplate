@@ -1,4 +1,4 @@
-import { Stub, KV } from 'fabric-shim';
+import { KV, Stub } from 'fabric-shim';
 import { Log } from './utils/logger';
 import { Transform } from './utils/datatransform';
 import * as _ from 'lodash';
@@ -37,6 +37,22 @@ export class TransactionHelper {
     }
 
     /**
+     * Query the state by range
+     *
+     * @returns {Promise<any>}
+     * @param startKey
+     * @param endKey
+     */
+    async getStateByRangeAsList(startKey: string, endKey: string): Promise<KV[]> {
+
+        Log.debug(`StartKey: ${startKey} - EndKey: ${endKey}`);
+
+        const iterator = await this.stub.getStateByRange(startKey, endKey);
+
+        return Transform.iteratorToList(iterator);
+    }
+
+    /**
      *   Deletes all objects returned by the query
      *   @param {Object} query the query
      */
@@ -53,7 +69,7 @@ export class TransactionHelper {
      * @param {String} key
      * @param value
      */
-    async putState(key: string, value: any) {
+    async putState(key: string, value: any): Promise<any> {
         return this.stub.putState(key, Transform.serialize(value));
     }
 
@@ -62,11 +78,15 @@ export class TransactionHelper {
      *
      * @return the state for the given key parsed as an Object
      */
-    async getStateAsObject(key: string) {
+    async getStateAsObject(key: string): Promise<Object> {
 
-        const rawValue = await this.stub.getState(key);
+        const valueAsBytes = await this.stub.getState(key);
 
-        return Transform.bufferToObject(rawValue);
+        if (!valueAsBytes || valueAsBytes.toString().length <= 0) {
+            return null;
+        }
+
+        return Transform.bufferToObject(valueAsBytes);
     }
 
     /**

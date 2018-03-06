@@ -4,7 +4,7 @@ export class ChaincodeError extends Error {
 
     private data: any;
 
-    constructor(key: string, data: any, stack?: any) {
+    constructor(key: string, data?: any, stack?: any) {
         super(key);
 
         if (!_.isUndefined(stack)) {

@@ -5,6 +5,7 @@ export class MockStateQueryIterator implements Iterators.StateQueryIterator {
     usingDomains: boolean;
 
     private currentLoc = 0;
+    private closed = false;
 
     constructor(private data: KV[]) {
 
@@ -67,14 +68,19 @@ export class MockStateQueryIterator implements Iterators.StateQueryIterator {
     }
 
     next(): Promise<{ value: any; done: boolean }> {
+
+        if (this.closed) {
+            throw new Error('Iterator has already been closed');
+        }
+
         return Promise.resolve({
             value: this.data[this.currentLoc++],
-            done: this.data.length > this.currentLoc
+            done: this.data.length < this.currentLoc
         });
     }
 
     close(): void {
-        return;
+        this.closed = true;
     }
 
 }

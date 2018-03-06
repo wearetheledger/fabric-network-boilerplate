@@ -1,8 +1,11 @@
+/* tslint:disable */
+
 import shim = require('fabric-shim');
 import { ChaincodeReponse, Stub } from 'fabric-shim';
 import { Chaincode } from '../src/Chaincode';
 import { TransactionHelper } from '../src/ChaincodeStub';
 import { Transform } from '../src/utils/datatransform';
+import { ChaincodeError } from '../src/ChaincodeError';
 
 export class TestChaincode extends Chaincode {
 
@@ -26,10 +29,10 @@ export class TestChaincode extends Chaincode {
         let carAsBytes: any = await stub.getState(carNumber); //get the car from chaincode state
 
         if (!carAsBytes || carAsBytes.toString().length <= 0) {
-            throw new Error(carNumber + ' does not exist: ');
+            throw new ChaincodeError('This car does not exist');
         }
 
-        return shim.success(carAsBytes);
+        return carAsBytes;
     }
 
     async initLedger(stub: Stub, txHelper: TransactionHelper, args?: string[]) {
@@ -108,15 +111,10 @@ export class TestChaincode extends Chaincode {
 
     async createCar(stub: Stub, txHelper: TransactionHelper, args: string[]) {
         console.info('============= START : Create Car ===========');
+
         if (args.length != 5) {
             throw new Error('Incorrect number of arguments. Expecting 5');
         }
-
-        let cid = new shim.ClientIdentity(stub);
-
-        console.log(cid.getAttributeValue('email'));
-
-        console.log(cid.getAttributeValue('username'));
 
         let car = {
             docType: 'car',
@@ -126,10 +124,8 @@ export class TestChaincode extends Chaincode {
             owner: args[4]
         };
 
-        await stub.putState(args[0], Buffer.from(JSON.stringify(car)));
+        await txHelper.putState(args[0], car);
         console.info('============= END : Create Car ===========');
-
-        return shim.success();
     }
 
     async queryAllCars(stub: Stub, txHelper: TransactionHelper, args: string[]) {
@@ -137,32 +133,7 @@ export class TestChaincode extends Chaincode {
         let startKey = 'CAR0';
         let endKey = 'CAR999';
 
-        let iterator = await stub.getStateByRange(startKey, endKey);
-
-        let allResults = [];
-        while (true) {
-            let res = await iterator.next();
-
-            if (res.value && res.value.value.toString()) {
-                let jsonRes: any = {};
-                console.log(res.value.value.toString('utf8'));
-
-                jsonRes.Key = res.value.key;
-                try {
-                    jsonRes.Record = JSON.parse(res.value.value.toString('utf8'));
-                } catch (err) {
-                    console.log(err);
-                    jsonRes.Record = res.value.value.toString('utf8');
-                }
-                allResults.push(jsonRes);
-            }
-            if (res.done) {
-                console.log('end of data');
-                await iterator.close();
-                console.info(allResults);
-                return shim.success(Buffer.from(JSON.stringify(allResults)));
-            }
-        }
+        return await txHelper.getStateByRangeAsList(startKey, endKey);
     }
 
     async changeCarOwner(stub: Stub, txHelper: TransactionHelper, args: string[]) {

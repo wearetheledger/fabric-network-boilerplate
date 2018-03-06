@@ -180,9 +180,9 @@ declare module 'fabric-shim' {
 
 
     export namespace Iterators {
-        interface EventEmitter {
-            listenerCount(emitter: EventEmitter, event: string | symbol): number; // deprecated
-            defaultMaxListeners: number;
+        class EventEmitter {
+            static listenerCount(emitter: EventEmitter, event: string | symbol): number; // deprecated
+            static defaultMaxListeners: number;
 
             addListener(event: string | symbol, listener: (...args: any[]) => void): this;
             on(event: string | symbol, listener: (...args: any[]) => void): this;

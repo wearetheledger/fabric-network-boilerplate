@@ -6,6 +6,7 @@ import { ChaincodeReponse } from 'fabric-shim';
 import { Transform } from '../src/utils/datatransform';
 
 import { expect } from 'chai';
+process.setMaxListeners(0); 
 
 const chaincode = new TestChaincode();
 

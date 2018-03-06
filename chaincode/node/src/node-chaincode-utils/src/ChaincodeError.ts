@@ -15,7 +15,6 @@ export class ChaincodeError extends Error {
     }
 
     get serialized() {
-
         return JSON.stringify({
             'key': this.message,
             'data': this.data,

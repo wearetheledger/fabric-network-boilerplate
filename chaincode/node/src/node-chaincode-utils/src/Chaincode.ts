@@ -1,5 +1,5 @@
 import shim = require('fabric-shim');
-import { ChaincodeInterface, Stub,ChaincodeReponse } from 'fabric-shim';
+import { ChaincodeInterface, Stub, ChaincodeReponse } from 'fabric-shim';
 import { Helpers } from './utils/helpers';
 import { LoggerInstance } from 'winston';
 import { ERRORS } from './constants/errors';
@@ -16,34 +16,51 @@ export class Chaincode implements ChaincodeInterface {
     }
 
     /**
-     * @return the name of the current chaincode.
+     * the name of the current chaincode.
+     * 
+     * @readonly
+     * @type {string}
+     * @memberof Chaincode
      */
-    get name() {
+    get name() :string{
         return this.constructor.name;
     }
 
     /**
-     * @return the transaction helper for the given stub. This can be used to extend
      * the Default TransactionHelper with extra functionality and return your own instance.
+     * 
+     * @param {Stub} stub 
+     * @returns the transaction helper for the given stub. This can be used to extend
+     * @memberof Chaincode
      */
     getTransactionHelperFor(stub: Stub) {
 
         return new TransactionHelper(stub);
     }
 
-    // The Init method is called when the Smart Contract is instantiated by the blockchain network
-    // Best practice is to have any Ledger initialization in separate function -- see initLedger()
-
+    /**
+     * The Init method is called when the Smart Contract is instantiated by the blockchain network
+     * Best practice is to have any Ledger initialization in separate function -- see initLedger()
+     * 
+     * @param {Stub} stub 
+     * @returns {Promise<ChaincodeReponse>} 
+     * @memberof Chaincode
+     */
     async Init(stub: Stub): Promise<ChaincodeReponse> {
         this.logger.info(`=========== Instantiated ${this.name} chaincode ===========`);
 
         return shim.success();
     }
 
-    // The Invoke method is called as a result of an application request to run the Smart Contract.
-    // The calling application program has also specified the particular smart contract
-    // function to be called, with arguments
-
+    /**
+     * The Invoke method is called as a result of an application request to run the Smart Contract.
+     * The calling application program has also specified the particular smart contract
+     * function to be called, with arguments
+     * 
+     * @param {Stub} stub 
+     * @returns {Promise<ChaincodeReponse>} 
+     * @memberof Chaincode
+     */
     async Invoke(stub: Stub): Promise<ChaincodeReponse> {
 
         this.logger.info(`=========== Invoked Chaincode ${this.name} ===========`);
@@ -100,8 +117,12 @@ export class Chaincode implements ChaincodeInterface {
     }
 
     /**
-     * @param {Array} params
-     * @returns the parsed parameters
+     * Try and parse params to json
+     * 
+     * @private
+     * @param {string[]} params 
+     * @returns {any[]} the parsed parameters
+     * @memberof Chaincode
      */
     private parseParameters(params: string[]): any[] {
         const parsedParams: any[] = [];

@@ -11,61 +11,56 @@ export class MockStateQueryIterator implements Iterators.StateQueryIterator {
         // this.setMaxListeners(0);
     }
 
-    // tslint:disable-next-line:no-empty
-    _createAndEmitResult() { }
-    // tslint:disable-next-line:no-empty
-    _getResultFromBytes() { }
-
-    addListener(type: any, listener: any): any {
+    addListener(type: any, listener: any) {
         throw new Error('Method not implemented.');
     }
 
-    emit(type: any, ...args: any[]): any {
+    emit(type: any, ...args: any[]) {
         throw new Error('Method not implemented.');
     }
 
-    eventNames(): any {
+    eventNames() {
         throw new Error('Method not implemented.');
     }
 
-    getMaxListeners(): any {
+    getMaxListeners() {
         throw new Error('Method not implemented.');
     }
 
-    listenerCount(emitter: any, type?: any): any {
+    listenerCount(emitter: any, type?: any) {
         throw new Error('Method not implemented.');
     }
 
-    listeners(type: any): any {
+    listeners(type: any) {
         throw new Error('Method not implemented.');
     }
 
-    on(type: any, listener: any): any {
+    on(type: any, listener: any) {
         throw new Error('Method not implemented.');
     }
 
-    once(type: any, listener: any): any {
+    once(type: any, listener: any) {
         throw new Error('Method not implemented.');
     }
 
-    prependListener(type: any, listener: any): any {
+    prependListener(type: any, listener: any) {
         throw new Error('Method not implemented.');
     }
 
-    prependOnceListener(type: any, listener: any): any {
+    prependOnceListener(type: any, listener: any) {
         throw new Error('Method not implemented.');
     }
 
-    removeAllListeners(type: any, ...args: any[]): any {
+    removeAllListeners(type: any, ...args: any[]) {
         throw new Error('Method not implemented.');
     }
 
-    removeListener(type: any, listener: any): any {
+    removeListener(type: any, listener: any) {
         throw new Error('Method not implemented.');
     }
 
-    setMaxListeners(n: any):any {
-        this.defaultMaxListeners = n;
+    setMaxListeners(n: any) {
+        throw new Error('Method not implemented.');
     }
 
     init(): void {
@@ -84,9 +79,8 @@ export class MockStateQueryIterator implements Iterators.StateQueryIterator {
         });
     }
 
-    close(): Promise<any> {
+    close(): void {
         this.closed = true;
-        return Promise.resolve(true);
     }
 
 }

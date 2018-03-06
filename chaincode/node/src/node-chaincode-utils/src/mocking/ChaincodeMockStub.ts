@@ -181,10 +181,6 @@ export class ChaincodeMockStub implements MockStub {
                 };
             });
 
-        // this.logger.debug('startKey', startKey);
-        // this.logger.debug('endKey', endKey, items);
-        this.logger.debug('state', this.state);
-
         return Promise.resolve(new MockStateQueryIterator(items));
 
     }

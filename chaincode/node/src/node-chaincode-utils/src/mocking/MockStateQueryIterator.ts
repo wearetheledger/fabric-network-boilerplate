@@ -1,15 +1,16 @@
 import { Iterators, KV } from 'fabric-shim';
 
 export class MockStateQueryIterator implements Iterators.StateQueryIterator {
-    defaultMaxListeners: number;
+    defaultMaxListeners = 0;
     usingDomains: boolean;
 
     private currentLoc = 0;
     private closed = false;
 
     constructor(private data: KV[]) {
-
+        // this.setMaxListeners(0);
     }
+
     // tslint:disable-next-line:no-empty
     _createAndEmitResult() { }
     // tslint:disable-next-line:no-empty
@@ -63,8 +64,8 @@ export class MockStateQueryIterator implements Iterators.StateQueryIterator {
         throw new Error('Method not implemented.');
     }
 
-    setMaxListeners(n: any): any {
-        throw new Error('Method not implemented.');
+    setMaxListeners(n: any):any {
+        this.defaultMaxListeners = n;
     }
 
     init(): void {

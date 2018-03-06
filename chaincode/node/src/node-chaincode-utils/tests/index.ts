@@ -7,6 +7,8 @@ import { Transform } from '../src/utils/datatransform';
 
 import { expect } from 'chai';
 
+process.setMaxListeners(0);
+
 const chaincode = new TestChaincode();
 
 describe('Test Mockstub', () => {

@@ -1,24 +1,12 @@
-import { Stub } from "fabric-shim";
-import { getLogger } from "./utils/logger";
-import { LoggerInstance } from "winston";
-import {
-    bufferToDate,
-    bufferToString,
-    iteratorToKVList,
-    iteratorToList,
-    KV,
-    serialize,
-    toObject
-} from "./utils/datatransform";
-import * as _ from "lodash";
+import { Stub, KV } from 'fabric-shim';
+import { Log } from './utils/logger';
+import { Transform } from './utils/datatransform';
+import * as _ from 'lodash';
 
 export class TransactionHelper {
 
-    private logger: LoggerInstance;
-
     constructor(private stub: Stub) {
         this.stub = stub;
-        this.logger = getLogger('TransactionHelper');
     }
 
     /**
@@ -37,22 +25,22 @@ export class TransactionHelper {
             queryString = <string>query;
         }
 
-        this.logger.debug(`Query: ${queryString}`);
+        Log.debug(`Query: ${queryString}`);
 
         const iterator = await this.stub.getQueryResult(queryString);
 
         if (keyValue) {
-            return iteratorToKVList(iterator);
+            return Transform.iteratorToKVList(iterator);
         }
 
-        return iteratorToList(iterator)
+        return Transform.iteratorToList(iterator);
     }
 
     /**
      *   Deletes all objects returned by the query
      *   @param {Object} query the query
      */
-    async deleteAllReturnedByQuery(query: string | object) {
+    async deleteAllReturnedByQuery(query: string | object): Promise<KV[]> {
 
         const allResults = <KV[]>(await this.getQueryResultAsList(query, true));
 
@@ -66,7 +54,7 @@ export class TransactionHelper {
      * @param value
      */
     async putState(key: string, value: any) {
-        return this.stub.putState(key, serialize(value));
+        return this.stub.putState(key, Transform.serialize(value));
     }
 
     /**
@@ -78,7 +66,7 @@ export class TransactionHelper {
 
         const rawValue = await this.stub.getState(key);
 
-        return toObject(rawValue);
+        return Transform.toObject(rawValue);
     }
 
     /**
@@ -90,7 +78,7 @@ export class TransactionHelper {
 
         const rawValue = await this.stub.getState(key);
 
-        return bufferToString(rawValue);
+        return Transform.bufferToString(rawValue);
     }
 
     /**
@@ -102,14 +90,14 @@ export class TransactionHelper {
 
         const rawValue = await this.stub.getState(key);
 
-        return bufferToDate(rawValue);
+        return Transform.bufferToDate(rawValue);
     }
 
     /**
      * @return the Transaction date as a Javascript Date Object.
      */
     getTxDate(): Date {
-        return this.stub.getTxTimestamp().toDate()
+        return this.stub.getTxTimestamp().toDate();
     }
 
     /**
@@ -127,7 +115,7 @@ export class TransactionHelper {
             bufferedPayload = Buffer.from(JSON.stringify(payload));
         }
 
-        this.logger.debug(`Setting Event ${name} with payload ${JSON.stringify(payload)}`);
+        Log.debug(`Setting Event ${name} with payload ${JSON.stringify(payload)}`);
 
         this.stub.setEvent(name, bufferedPayload);
     }

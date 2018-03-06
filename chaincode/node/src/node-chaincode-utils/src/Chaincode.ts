@@ -112,7 +112,6 @@ export class Chaincode implements ChaincodeInterface {
                 parsedParams.push(JSON.parse(param));
             } catch (err) {
                 // if it fails fall back to original param
-                this.logger.error(`failed to parse param ${param}`);
                 parsedParams.push(param);
             }
         });

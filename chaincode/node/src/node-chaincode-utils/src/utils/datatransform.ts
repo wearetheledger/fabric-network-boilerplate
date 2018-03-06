@@ -12,7 +12,7 @@ export class Transform {
         return Buffer.from(JSON.stringify(this.normalizePayload(value)));
     };
 
-    public static toObject(buffer: Buffer): object | undefined {
+    public static bufferToObject(buffer: Buffer): object | undefined {
         if (buffer == null) {
             return;
         }
@@ -93,7 +93,7 @@ export class Transform {
         while (res == null || !res.done) {
             res = await iterator.next();
             if (res.value && res.value.value.toString()) {
-                let parsedItem: { key: string, value: any } = { key: '', value: {} };
+                let parsedItem: { key: string, value: any } = {key: '', value: {}};
 
                 parsedItem.key = res.value.key;
 
@@ -129,7 +129,4 @@ export class Transform {
 
         return value;
     };
-
-
 }
-

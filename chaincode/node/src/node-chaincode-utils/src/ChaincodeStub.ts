@@ -66,7 +66,7 @@ export class TransactionHelper {
 
         const rawValue = await this.stub.getState(key);
 
-        return Transform.toObject(rawValue);
+        return Transform.bufferToObject(rawValue);
     }
 
     /**

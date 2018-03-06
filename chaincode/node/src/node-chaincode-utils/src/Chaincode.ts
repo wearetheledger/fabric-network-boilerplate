@@ -1,5 +1,5 @@
 import shim = require('fabric-shim');
-import { ChaincodeInterface, Stub } from 'fabric-shim';
+import { ChaincodeInterface, Stub,ChaincodeReponse } from 'fabric-shim';
 import { Log } from './utils/logger';
 import { LoggerInstance } from 'winston';
 import { ERRORS } from './constants/errors';
@@ -35,7 +35,7 @@ export class Chaincode implements ChaincodeInterface {
     // The Init method is called when the Smart Contract is instantiated by the blockchain network
     // Best practice is to have any Ledger initialization in separate function -- see initLedger()
 
-    async Init(stub: Stub) {
+    async Init(stub: Stub): Promise<ChaincodeReponse> {
         this.logger.info(`=========== Instantiated ${this.name} chaincode ===========`);
 
         return shim.success();
@@ -45,7 +45,7 @@ export class Chaincode implements ChaincodeInterface {
     // The calling application program has also specified the particular smart contract
     // function to be called, with arguments
 
-    async Invoke(stub: Stub) {
+    async Invoke(stub: Stub): Promise<ChaincodeReponse> {
 
         this.logger.info(`=========== Invoked Chaincode ${this.name} ===========`);
         this.logger.info(`Transaction ID: ${stub.getTxID()}`);

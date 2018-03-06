@@ -5,38 +5,44 @@
 
 /// <reference types="node" />
 
-declare module "fabric-shim" {
+/* tslint:disable */
 
-    import { Logger } from "log4js";
-    import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
+declare module 'fabric-shim' {
+
+    import { Logger } from 'log4js';
+    import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
 
     export function error(...args: any[]): ErrorResponse;
+
     export function newLogger(name: string): Logger;
+
     export function start(chaincode: ChaincodeInterface): any;
+
     export function success(payload?: Buffer): SuccessResponse;
 
-    interface SuccessResponse {
-        status: number;
-        payload: Buffer;
+    interface SuccessResponse extends ChaincodeReponse {
     }
 
-    interface ErrorResponse {
-        status: number;
-        message: string;
+    interface ErrorResponse extends ChaincodeReponse {
     }
 
     export class ClientIdentity {
         constructor(stub: Stub);
+
         assertAttributeValue(attrName: string, attrValue: string): boolean;
+
         getAttributeValue(attrName: string): string | null;
+
         getID(): string;
+
         getMSPID(): string;
+
         getX509Certificate(): X509;
     }
 
     type ProposalCreator = { [fieldName: string]: any, mspid: string };
 
-    type SignedProposal = {
+    export class SignedProposal {
         signature: Buffer;
         proposal: Proposal;
     }
@@ -44,12 +50,12 @@ declare module "fabric-shim" {
     type Proposal = {
         header: Header;
         payload: ChaincodeProposalPayload;
-    }
+    };
 
     type Header = {
         channel_header: ChannelHeader;
         signature_header: SignatureHeader;
-    }
+    };
 
     type ChannelHeader = {
         type: ChannelHeaderType;
@@ -58,17 +64,17 @@ declare module "fabric-shim" {
         channel_id: string;
         tx_id: string;
         epoch: number;
-    }
+    };
 
     type SignatureHeader = {
         creator: ProposalCreator;
         nonce: Buffer;
-    }
+    };
 
     type ChaincodeProposalPayload = {
         input: Buffer;
         transientMap: Map<string, Buffer>;
-    }
+    };
 
     enum ChannelHeaderType {
         MESSAGE = 0,
@@ -80,34 +86,72 @@ declare module "fabric-shim" {
         CHAINCODE_PACKAGE,
     }
 
-    type Response = {
+    type ChaincodeReponse = {
         status: number;
         message: string;
         payload: Buffer;
+    };
+
+    export class MockStub extends Stub {
+        mockTransactionStart(txid: string): void
+
+        mockTransactionEnd(uuid: string): void
+
+        mockInit(uuid: string, args: string[]): Promise<ChaincodeReponse>
+
+        mockInvoke(uuid: string, args: string[]): Promise<ChaincodeReponse>
+
+        mockPeerChaincode(invokableChaincodeName: string, otherStub: MockStub): void
+
+        mockInvokeWithSignedProposal(uuid: string, args: string[], sp: SignedProposal): Promise<ChaincodeReponse>
+
+        setSignedProposal(sp: SignedProposal): void
+
+        setTxTimestamp(timestamp: Timestamp): void;
     }
 
     export class Stub {
         constructor(client: any, channel_id: any, txId: any, chaincodeInput: any, signedProposal: any);
+
         createCompositeKey(objectType: string, attributes: string[]): string;
+
         deleteState(key: string): Promise<any>;
+
         getArgs(): string[];
+
         getBinding(): string;
+
         getChannelID(): string;
+
         getCreator(): ProposalCreator;
-        getFunctionAndParameters(...args: any[]): { params: string[], fcn: string };
+
+        getFunctionAndParameters(): { params: string[], fcn: string };
+
         getHistoryForKey(key: string): Promise<Iterators.HistoryQueryIterator>;
+
         getQueryResult(query: string): Promise<Iterators.StateQueryIterator>;
+
         getSignedProposal(): SignedProposal;
+
         getState(key: string): Promise<Buffer>;
+
         getStateByPartialCompositeKey(objectType: string, attributes: string[]): Promise<Iterators.StateQueryIterator>;
+
         getStateByRange(startKey: string, endKey: string): Promise<Iterators.StateQueryIterator>;
+
         getStringArgs(): string[];
+
         getTransient(): Map<string, Buffer>;
+
         getTxID(): string;
+
         getTxTimestamp(): Timestamp;
-        invokeChaincode(chaincodeName: string, args: Buffer[], channel: string): Promise<Response>;
+
+        invokeChaincode(chaincodeName: string, args: Buffer[], channel: string): Promise<ChaincodeReponse>;
+
         putState(key: string, value: Buffer): Promise<any>; // TODO promise contains what?????
         setEvent(name: string, payload: Buffer): void;
+
         splitCompositeKey(compositeKey: string): { objectType: string, attributes: string[] };
 
         static RESPONSE_CODE: {
@@ -120,64 +164,93 @@ declare module "fabric-shim" {
 
 
     interface ChaincodeInterface {
-        Init(stub: Stub): void;
-        Invoke(stub: Stub): void;
+        Init(stub: Stub): Promise<ChaincodeReponse>
+
+        Invoke(stub: Stub): Promise<ChaincodeReponse>
     }
 
 
     export namespace Iterators {
-        class EventEmitter {
-            constructor();
-            addListener(type: any, listener: any): any;
-            emit(type: any, ...args: any[]): any;
-            eventNames(): any;
-            getMaxListeners(): any;
-            listenerCount(type: any): any;
-            listeners(type: any): any;
-            on(type: any, listener: any): any;
-            once(type: any, listener: any): any;
-            prependListener(type: any, listener: any): any;
-            prependOnceListener(type: any, listener: any): any;
-            removeAllListeners(type: any, ...args: any[]): any;
-            removeListener(type: any, listener: any): any;
-            setMaxListeners(n: any): any;
-            static EventEmitter: any;
-            static defaultMaxListeners: number;
-            static init(): void;
-            static listenerCount(emitter: any, type: any): any;
-            static usingDomains: boolean;
+        interface EventEmitter {
 
+            addListener(type: any, listener: any): any;
+
+            emit(type: any, ...args: any[]): any;
+
+            eventNames(): any;
+
+            getMaxListeners(): any;
+
+            listenerCount(type: any): any;
+
+            listeners(type: any): any;
+
+            on(type: any, listener: any): any;
+
+            once(type: any, listener: any): any;
+
+            prependListener(type: any, listener: any): any;
+
+            prependOnceListener(type: any, listener: any): any;
+
+            removeAllListeners(type: any, ...args: any[]): any;
+
+            removeListener(type: any, listener: any): any;
+
+            setMaxListeners(n: any): any;
         }
 
-        class Iterator {
+        interface Iterator extends EventEmitter {
             defaultMaxListeners: number;
             usingDomains: boolean;
+
             init(): void;
+
             listenerCount(emitter: any, type: any): any;
-            domain: any;
+
             addListener(type: any, listener: any): any;
+
             close(): void;
+
             emit(type: any, ...args: any[]): any;
+
             eventNames(): any;
+
             getMaxListeners(): any;
+
             listenerCount(type: any): any;
+
             listeners(type: any): any;
+
             on(type: any, listener: any): any;
+
             once(type: any, listener: any): any;
+
             prependListener(type: any, listener: any): any;
+
             prependOnceListener(type: any, listener: any): any;
+
             removeAllListeners(type: any, ...args: any[]): any;
+
             removeListener(type: any, listener: any): any;
+
             setMaxListeners(n: any): any;
-            next(): any
+
+            next(): any;
         }
 
-        class HistoryQueryIterator extends Iterator {
-            next(): void;
+        interface Iterator extends EventEmitter {
+            close(): void;
+
+            next(): Promise<any>;
         }
 
-        class StateQueryIterator extends Iterator {
-            next(): { value: any, done: boolean };
+        interface HistoryQueryIterator extends Iterator {
+            next(): Promise<KV>;
+        }
+
+        interface StateQueryIterator extends Iterator {
+            next(): Promise<{ value: any, done: boolean }>;
         }
 
     }
@@ -211,7 +284,7 @@ declare module "fabric-shim" {
         organizationName: string;
         commonName: string;
     }
-    
+
     interface KV {
         key: string;
         value: any;

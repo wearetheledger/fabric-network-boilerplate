@@ -19,7 +19,6 @@ export class Chaincode implements ChaincodeInterface {
      * @return the name of the current chaincode.
      */
     get name() {
-
         return this.constructor.name;
     }
 

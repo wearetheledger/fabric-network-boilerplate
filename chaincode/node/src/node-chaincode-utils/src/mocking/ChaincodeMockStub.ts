@@ -12,6 +12,8 @@ import { MockStateQueryIterator } from './MockStateQueryIterator';
 import { Chaincode } from '../Chaincode';
 import { ChaincodeProposalCreator } from './ChaincodeProposalCreator';
 import { CompositeKeys } from './CompositeKeys';
+import { Helpers } from '../utils/helpers';
+import { LoggerInstance } from 'winston';
 
 const defaultUserCert = '-----BEGIN CERTIFICATE-----' +
     'MIIB6TCCAY+gAwIBAgIUHkmY6fRP0ANTvzaBwKCkMZZPUnUwCgYIKoZIzj0EAwIw' +
@@ -29,6 +31,8 @@ const defaultUserCert = '-----BEGIN CERTIFICATE-----' +
 
 export class ChaincodeMockStub implements MockStub {
 
+    private logger: LoggerInstance;
+
     private txTimestamp: Timestamp;
     private txID: string;
     private args: string[];
@@ -37,6 +41,7 @@ export class ChaincodeMockStub implements MockStub {
     private signedProposal: SignedProposal;
 
     constructor(private name: string, private cc: Chaincode, private usercert: string = defaultUserCert) {
+        this.logger = Helpers.log(this.name);
     }
 
     getTxID(): string {
@@ -176,9 +181,9 @@ export class ChaincodeMockStub implements MockStub {
                 };
             });
 
-        console.log('startKey', startKey);
-        console.log('endKey', endKey, items);
-        console.log('state', this.state);
+        // this.logger.debug('startKey', startKey);
+        // this.logger.debug('endKey', endKey, items);
+        this.logger.debug('state', this.state);
 
         return Promise.resolve(new MockStateQueryIterator(items));
 

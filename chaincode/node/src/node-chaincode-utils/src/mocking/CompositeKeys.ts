@@ -1,6 +1,7 @@
 import { SplitCompositekey } from 'fabric-shim';
 
 export class CompositeKeys {
+
     static MIN_UNICODE_RUNE_VALUE = '\u0000';
     static MAX_UNICODE_RUNE_VALUE = '\u{10ffff}';
     static COMPOSITEKEY_NS = '\x00';
@@ -24,7 +25,7 @@ export class CompositeKeys {
 
     static splitCompositeKey(compositeKey: string): SplitCompositekey {
 
-        let result = <SplitCompositekey>{objectType: null, attributes: []};
+        let result = <SplitCompositekey>{ objectType: null, attributes: [] };
 
         if (compositeKey && compositeKey.length > 1 && compositeKey.charAt(0) === CompositeKeys.COMPOSITEKEY_NS) {
             let splitKey = compositeKey.substring(1).split(CompositeKeys.MIN_UNICODE_RUNE_VALUE);

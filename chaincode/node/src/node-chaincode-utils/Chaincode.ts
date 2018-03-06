@@ -1,18 +1,18 @@
-import shim = require("fabric-shim");
-import { ChaincodeInterface, Stub } from "fabric-shim";
-import { getLogger } from "./utils/logger";
-import { LoggerInstance } from "winston";
-import { ERRORS } from "./constants/errors";
-import { normalizePayload } from "./utils/normalizePayload";
-import { ChaincodeError } from "./ChaincodeError";
-import { TransactionHelper } from "./ChaincodeStub";
+import shim = require('fabric-shim');
+import { ChaincodeInterface, Stub } from 'fabric-shim';
+import { Log } from './utils/logger';
+import { LoggerInstance } from 'winston';
+import { ERRORS } from './constants/errors';
+import { ChaincodeError } from './ChaincodeError';
+import { TransactionHelper } from './ChaincodeStub';
+import { Transform } from './utils/datatransform';
 
 export class Chaincode implements ChaincodeInterface {
 
     private logger: LoggerInstance;
 
     constructor() {
-        this.logger = getLogger(this.name)
+        this.logger = Log.debug(this.name);
     }
 
     /**
@@ -49,7 +49,7 @@ export class Chaincode implements ChaincodeInterface {
 
         this.logger.info(`=========== Invoked Chaincode ${this.name} ===========`);
         this.logger.info(`Transaction ID: ${stub.getTxID()}`);
-        this.logger.info(`Args: ${stub.getArgs().join(",")}`);
+        this.logger.info(`Args: ${stub.getArgs().join(',')}`);
 
         let ret = stub.getFunctionAndParameters();
 
@@ -78,7 +78,7 @@ export class Chaincode implements ChaincodeInterface {
             let payload = await method.call(this, stub, this.getTransactionHelperFor(stub), parsedParameters);
 
             if (payload && !Buffer.isBuffer(payload)) {
-                payload = Buffer.from(JSON.stringify(normalizePayload(payload)));
+                payload = Buffer.from(JSON.stringify(Transform.normalizePayload(payload)));
             }
 
             return shim.success(payload);

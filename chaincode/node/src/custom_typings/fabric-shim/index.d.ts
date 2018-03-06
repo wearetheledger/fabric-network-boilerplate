@@ -181,77 +181,30 @@ declare module 'fabric-shim' {
 
     export namespace Iterators {
         interface EventEmitter {
-
-            addListener(type: any, listener: any): any;
-
-            emit(type: any, ...args: any[]): any;
-
-            eventNames(): any;
-
-            getMaxListeners(): any;
-
-            listenerCount(type: any): any;
-
-            listeners(type: any): any;
-
-            on(type: any, listener: any): any;
-
-            once(type: any, listener: any): any;
-
-            prependListener(type: any, listener: any): any;
-
-            prependOnceListener(type: any, listener: any): any;
-
-            removeAllListeners(type: any, ...args: any[]): any;
-
-            removeListener(type: any, listener: any): any;
-
-            setMaxListeners(n: any): any;
-        }
-
-        interface Iterator extends EventEmitter {
+            listenerCount(emitter: EventEmitter, event: string | symbol): number; // deprecated
             defaultMaxListeners: number;
-            usingDomains: boolean;
 
-            init(): void;
-
-            listenerCount(emitter: any, type: any): any;
-
-            addListener(type: any, listener: any): any;
-
-            close(): void;
-
-            emit(type: any, ...args: any[]): any;
-
-            eventNames(): any;
-
-            getMaxListeners(): any;
-
-            listenerCount(type: any): any;
-
-            listeners(type: any): any;
-
-            on(type: any, listener: any): any;
-
-            once(type: any, listener: any): any;
-
-            prependListener(type: any, listener: any): any;
-
-            prependOnceListener(type: any, listener: any): any;
-
-            removeAllListeners(type: any, ...args: any[]): any;
-
-            removeListener(type: any, listener: any): any;
-
-            setMaxListeners(n: any): any;
-
-            next(): any;
+            addListener(event: string | symbol, listener: (...args: any[]) => void): this;
+            on(event: string | symbol, listener: (...args: any[]) => void): this;
+            once(event: string | symbol, listener: (...args: any[]) => void): this;
+            prependListener(event: string | symbol, listener: (...args: any[]) => void): this;
+            prependOnceListener(event: string | symbol, listener: (...args: any[]) => void): this;
+            removeListener(event: string | symbol, listener: (...args: any[]) => void): this;
+            removeAllListeners(event?: string | symbol): this;
+            setMaxListeners(n: number): this;
+            getMaxListeners(): number;
+            listeners(event: string | symbol): Function[];
+            rawListeners?(event: string | symbol): Function[];
+            emit(event: string | symbol, ...args: any[]): boolean;
+            eventNames(): Array<string | symbol>;
+            listenerCount(type: string | symbol): number;
         }
 
         interface Iterator extends EventEmitter {
-            close(): void;
-
-            next(): Promise<any>;
+            close(): Promise<any>;
+            next(): Promise<any | { done: boolean; }>;
+            _createAndEmitResult(): any;
+            _getResultFromBytes(): any;
         }
 
         interface HistoryQueryIterator extends Iterator {

@@ -40,7 +40,11 @@ declare module 'fabric-shim' {
         getX509Certificate(): X509;
     }
 
-    type ProposalCreator = { [fieldName: string]: any, mspid: string };
+    interface ProposalCreator {
+        mspid: string;
+
+        getMspid(): string;
+    }
 
     export class SignedProposal {
         signature: Buffer;

@@ -2,17 +2,32 @@ import { ChaincodeReponse, Iterators, KV, MockStub, ProposalCreator, SignedPropo
 import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb';
 import { MockStateQueryIterator } from './MockStateQueryIterator';
 import { Chaincode } from '../Chaincode';
+import { ChaincodeProposalCreator } from './ChaincodeProposalCreator';
+
+const defaultUserCert = '-----BEGIN CERTIFICATE-----' +
+    'MIIB6TCCAY+gAwIBAgIUHkmY6fRP0ANTvzaBwKCkMZZPUnUwCgYIKoZIzj0EAwIw' +
+    'GzEZMBcGA1UEAxMQZmFicmljLWNhLXNlcnZlcjAeFw0xNzA5MDgwMzQyMDBaFw0x' +
+    'ODA5MDgwMzQyMDBaMB4xHDAaBgNVBAMTE015VGVzdFVzZXJXaXRoQXR0cnMwWTAT' +
+    'BgcqhkjOPQIBBggqhkjOPQMBBwNCAATmB1r3CdWvOOP3opB3DjJnW3CnN8q1ydiR' +
+    'dzmuA6A2rXKzPIltHvYbbSqISZJubsy8gVL6GYgYXNdu69RzzFF5o4GtMIGqMA4G' +
+    'A1UdDwEB/wQEAwICBDAMBgNVHRMBAf8EAjAAMB0GA1UdDgQWBBTYKLTAvJJK08OM' +
+    'VGwIhjMQpo2DrjAfBgNVHSMEGDAWgBTEs/52DeLePPx1+65VhgTwu3/2ATAiBgNV' +
+    'HREEGzAZghdBbmlscy1NYWNCb29rLVByby5sb2NhbDAmBggqAwQFBgcIAQQaeyJh' +
+    'dHRycyI6eyJhdHRyMSI6InZhbDEifX0wCgYIKoZIzj0EAwIDSAAwRQIhAPuEqWUp' +
+    'svTTvBqLR5JeQSctJuz3zaqGRqSs2iW+QB3FAiAIP0mGWKcgSGRMMBvaqaLytBYo' +
+    '9v3hRt1r8j8vN0pMcg==' +
+    '-----END CERTIFICATE-----';
 
 export class ChaincodeMockStub implements MockStub {
 
     private txTimestamp: Timestamp;
     private txID: string;
     private args: string[];
-    private state: Map<string, Buffer>;
+    public state: Map<string, Buffer> = new Map();
     private invokables: Map<string, MockStub>;
     private signedProposal: SignedProposal;
 
-    constructor(private name: string, private cc: Chaincode) {
+    constructor(private name: string, private cc: Chaincode, private usercert: string = defaultUserCert) {
     }
 
     getTxID(): string {
@@ -66,25 +81,25 @@ export class ChaincodeMockStub implements MockStub {
     }
 
     // Initialise this chaincode,  also starts and ends a transaction.
-    mockInit(uuid: string, args: string[]): Promise<ChaincodeReponse> {
+    async mockInit(uuid: string, args: string[]): Promise<ChaincodeReponse> {
         this.args = args;
         this.mockTransactionStart(uuid);
-        const res = this.cc.Init(this);
+        const res = await this.cc.Init(this);
         this.mockTransactionEnd(uuid);
         return res;
     }
 
     // Invoke this chaincode, also starts and ends a transaction.
-    mockInvoke(uuid: string, args: string[]): Promise<ChaincodeReponse> {
+    async mockInvoke(uuid: string, args: string[]): Promise<ChaincodeReponse> {
         this.args = args;
         this.mockTransactionStart(uuid);
-        const res = this.cc.Invoke(this);
+        const res = await this.cc.Invoke(this);
         this.mockTransactionEnd(uuid);
         return res;
     }
 
     // InvokeChaincode calls a peered chaincode.
-    invokeChaincode(chaincodeName: string, args: Buffer[], channel: string): Promise<ChaincodeReponse> {
+    async invokeChaincode(chaincodeName: string, args: Buffer[], channel: string): Promise<ChaincodeReponse> {
         // Internally we use chaincode name as a composite name
         if (channel != '') {
             chaincodeName = chaincodeName + '/' + channel;
@@ -92,15 +107,15 @@ export class ChaincodeMockStub implements MockStub {
 
         const otherStub = this.invokables[chaincodeName];
 
-        return otherStub.MockInvoke(this.txID, args);
+        return await otherStub.MockInvoke(this.txID, args);
     }
 
     // Invoke this chaincode, also starts and ends a transaction.
-    mockInvokeWithSignedProposal(uuid: string, args: string[], sp: SignedProposal): Promise<ChaincodeReponse> {
+    async mockInvokeWithSignedProposal(uuid: string, args: string[], sp: SignedProposal): Promise<ChaincodeReponse> {
         this.args = args;
         this.mockTransactionStart(uuid);
         this.signedProposal = sp;
-        const res = this.cc.Invoke(this);
+        const res = await this.cc.Invoke(this);
         this.mockTransactionEnd(uuid);
         return res;
     }
@@ -185,13 +200,12 @@ export class ChaincodeMockStub implements MockStub {
         return this.txTimestamp;
     }
 
-    // Not implemented
-    getBinding(): string {
-        return undefined;
+    getCreator(): ProposalCreator {
+        return new ChaincodeProposalCreator('dummymspId', this.usercert);
     }
 
     // Not implemented
-    getCreator(): ProposalCreator {
+    getBinding(): string {
         return undefined;
     }
 

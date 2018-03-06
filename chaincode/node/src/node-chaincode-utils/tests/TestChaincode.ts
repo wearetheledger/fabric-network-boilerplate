@@ -7,26 +7,32 @@ import { Transform } from '../src/utils/datatransform';
 export class TestChaincode extends Chaincode {
 
     async Init(stub: Stub): Promise<ChaincodeReponse> {
+
+        const args = stub.getArgs();
+
+        if (args[0] == 'init') {
+            await this.initLedger(stub, new TransactionHelper(stub));
+        }
+
         return shim.success(Transform.serialize({
             args: stub.getArgs()
         }));
     }
 
     async queryCar(stub: Stub, txHelper: TransactionHelper, args: string[]) {
-        if (args.length != 1) {
-            throw new Error('Incorrect number of arguments. Expecting CarNumber ex: CAR01');
-        }
+
         let carNumber = args[0];
 
         let carAsBytes: any = await stub.getState(carNumber); //get the car from chaincode state
+
         if (!carAsBytes || carAsBytes.toString().length <= 0) {
             throw new Error(carNumber + ' does not exist: ');
         }
-        console.log(carAsBytes.toString());
-        return carAsBytes;
+
+        return shim.success(carAsBytes);
     }
 
-    async initLedger(stub: Stub, txHelper: TransactionHelper, args: string[]) {
+    async initLedger(stub: Stub, txHelper: TransactionHelper, args?: string[]) {
         console.info('============= START : Initialize Ledger ===========');
         let cars = [];
         cars.push({
@@ -122,6 +128,8 @@ export class TestChaincode extends Chaincode {
 
         await stub.putState(args[0], Buffer.from(JSON.stringify(car)));
         console.info('============= END : Create Car ===========');
+
+        return shim.success();
     }
 
     async queryAllCars(stub: Stub, txHelper: TransactionHelper, args: string[]) {
@@ -152,7 +160,7 @@ export class TestChaincode extends Chaincode {
                 console.log('end of data');
                 await iterator.close();
                 console.info(allResults);
-                return Buffer.from(JSON.stringify(allResults));
+                return shim.success(Buffer.from(JSON.stringify(allResults)));
             }
         }
     }
@@ -169,5 +177,6 @@ export class TestChaincode extends Chaincode {
 
         await stub.putState(args[0], Buffer.from(JSON.stringify(car)));
         console.info('============= END : changeCarOwner ===========');
+        shim.success();
     }
 }

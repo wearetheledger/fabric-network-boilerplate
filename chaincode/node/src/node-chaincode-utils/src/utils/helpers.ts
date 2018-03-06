@@ -20,7 +20,7 @@ export class Helpers {
 
     public static checkArgs(args: string[], amount: number | number[]) {
         if (isArray(amount)) {
-            if (!amount.filter(a => { return args.length === a }).length) {
+            if (!amount.filter(a => { return args.length === a; }).length) {
                 throw new Error(`Incorrect number of arguments. Expecting ${amount}`);
             }
         } else {

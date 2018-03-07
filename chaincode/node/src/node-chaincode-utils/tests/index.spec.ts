@@ -6,7 +6,8 @@ import { ChaincodeReponse } from 'fabric-shim';
 import { Transform } from '../src/utils/datatransform';
 
 import { expect } from 'chai';
-process.setMaxListeners(0); 
+
+process.setMaxListeners(0);
 
 process.setMaxListeners(0);
 
@@ -126,5 +127,43 @@ describe('Test Mockstub', () => {
         expect(response.status).to.eq(200);
 
         expect(Object.keys(stub.state).length).to.equal(1);
+    });
+
+    it('Should be able to query using rich queries', async () => {
+
+        const query = {
+            selector: {
+                make: "Toyota"
+            }
+        };
+
+        const it = await stubWithInit.getQueryResult(JSON.stringify(query))
+
+        const items = await Transform.iteratorToList(it);
+
+        expect(items).to.deep.include({
+            make: 'Toyota',
+            model: 'Prius',
+            color: 'blue',
+            owner: 'Tomoko',
+            docType: 'car'
+        })
+    });
+
+    it('Should be able to query using an rich query operator ', async () => {
+
+        const query = {
+            selector: {
+                model: {
+                    "$in": ['Nano', "Punto"]
+                }
+            }
+        };
+
+        const it = await stubWithInit.getQueryResult(JSON.stringify(query));
+
+        const items = await Transform.iteratorToList(it);
+
+        expect(items).to.be.length(2)
     });
 });

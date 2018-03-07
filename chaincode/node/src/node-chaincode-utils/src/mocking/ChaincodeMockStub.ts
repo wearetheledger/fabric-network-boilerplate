@@ -14,6 +14,9 @@ import { ChaincodeProposalCreator } from './ChaincodeProposalCreator';
 import { CompositeKeys } from './CompositeKeys';
 import { Helpers } from '../utils/helpers';
 import { LoggerInstance } from 'winston';
+import * as queryEngine from '@theledger/couchdb-query-engine';
+import { ChaincodeError } from '../ChaincodeError';
+import { Transform } from '../utils/datatransform';
 
 const defaultUserCert = '-----BEGIN CERTIFICATE-----' +
     'MIIB6TCCAY+gAwIBAgIUHkmY6fRP0ANTvzaBwKCkMZZPUnUwCgYIKoZIzj0EAwIw' +
@@ -190,8 +193,35 @@ export class ChaincodeMockStub implements MockStub {
     // that support rich query.  The query string is in the syntax of the underlying
     // state database. An iterator is returned which can be used to iterate (next) over
     // the query result set
+    // ==========================
+    // Blog post on writing rich queries -
+    // https://medium.com/wearetheledger/hyperledger-fabric-couchdb-fantastic-queries-and-where-to-find-them-f8a3aecef767
     getQueryResult(query: string): Promise<Iterators.StateQueryIterator> {
-        return undefined;
+
+        const keyValues: any = {};
+
+        Object.keys(this.state)
+            .forEach(k => {
+                keyValues[k] = Transform.bufferToObject(this.state[k]);
+            });
+
+        let parsedQuery: object;
+
+        try {
+            parsedQuery = JSON.parse(query);
+        } catch (err) {
+            throw new ChaincodeError('Error parsing query, should be string');
+        }
+
+        const items = queryEngine.parseQuery(keyValues, parsedQuery)
+            .map((item: KV) => {
+                return {
+                    key: item.key,
+                    value: Transform.serialize(item.value)
+                };
+            });
+
+        return Promise.resolve(new MockStateQueryIterator(items));
     }
 
     getHistoryForKey(key: string): Promise<Iterators.HistoryQueryIterator> {

@@ -22,6 +22,7 @@
     },
     "homepage": "https://github.com/wearetheledger/fabric-network-boilerplate#readme",
     "dependencies": {
+        "@theledger/couchdb-query-engine": "2.4.0",
         "@types/google-protobuf": "^3.2.7",
         "@types/lodash": "^4.14.104",
         "fabric-shim": "1.1.0-alpha",

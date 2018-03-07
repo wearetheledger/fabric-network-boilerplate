@@ -5,10 +5,10 @@ export class Transform {
 
     /**
      * serialize payload
-     * 
+     *
      * @static
-     * @param {*} value 
-     * @returns 
+     * @param {*} value
+     * @returns
      * @memberof Transform
      */
     public static serialize(value: any) {
@@ -22,10 +22,10 @@ export class Transform {
 
     /**
      * parse string to object
-     * 
+     *
      * @static
-     * @param {Buffer} buffer 
-     * @returns {(object | undefined)} 
+     * @param {Buffer} buffer
+     * @returns {(object | undefined)}
      * @memberof Transform
      */
     public static bufferToObject(buffer: Buffer): object | undefined {
@@ -43,10 +43,10 @@ export class Transform {
 
     /**
      * bufferToDate
-     * 
+     *
      * @static
-     * @param {Buffer} buffer 
-     * @returns {(Date | undefined)} 
+     * @param {Buffer} buffer
+     * @returns {(Date | undefined)}
      * @memberof Transform
      */
     public static bufferToDate(buffer: Buffer): Date | undefined {
@@ -88,6 +88,7 @@ export class Transform {
         let res;
         while (res == null || !res.done) {
             res = await iterator.next();
+
             if (res.value && res.value.value.toString()) {
                 let parsedItem: any;
 
@@ -117,7 +118,7 @@ export class Transform {
         while (res == null || !res.done) {
             res = await iterator.next();
             if (res.value && res.value.value.toString()) {
-                let parsedItem: { key: string, value: any } = { key: '', value: {} };
+                let parsedItem: { key: string, value: any } = {key: '', value: {}};
 
                 parsedItem.key = res.value.key;
 
@@ -137,10 +138,10 @@ export class Transform {
 
     /**
      * normalizePayload
-     * 
+     *
      * @static
-     * @param {*} value 
-     * @returns {*} 
+     * @param {*} value
+     * @returns {*}
      * @memberof Transform
      */
     public static normalizePayload(value: any): any {

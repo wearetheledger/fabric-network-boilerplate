@@ -73,9 +73,11 @@ export class MockStateQueryIterator implements Iterators.StateQueryIterator {
             throw new Error('Iterator has already been closed');
         }
 
+        this.currentLoc++;
+
         return Promise.resolve({
-            value: this.data[this.currentLoc++],
-            done: this.data.length < this.currentLoc
+            value: this.data[this.currentLoc - 1],
+            done: this.data.length <= this.currentLoc
         });
     }
 

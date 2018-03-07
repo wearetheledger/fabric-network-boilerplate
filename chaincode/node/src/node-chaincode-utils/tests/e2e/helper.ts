@@ -26,24 +26,17 @@ export interface ChainMethod {
 
 export class TestHelper {
 
-    static runTests(chainCode: any, init: InvokeObject, chainMethods: ChainMethod[]) {
+    static async runTests(chainCode: any, chainMethods: ChainMethod[]) {
 
         const stub: ChaincodeMockStub = new ChaincodeMockStub('mock', chainCode);
-
-        describe('Start Mockstub', () => {
-            it('Should be able to init', async () => {
-                const response: ChaincodeReponse = await stub.mockInit(init.fcn, init.args);
-                expect(Transform.bufferToObject(response.payload)['args']).to.deep.equal(init.args);
-            });
-        })
 
         describe('Test ChainMethods', () => {
             chainMethods.forEach(chainMethod => {
                 it(chainMethod.itShouldInvoke, async () => {
-                    this.invoke(stub, chainMethod.invoke);
+                    await this.invoke(stub, chainMethod.invoke);
                 });
                 it(chainMethod.itShouldQuery, async () => {
-                    this.query(stub, chainMethod.query);
+                    await this.query(stub, chainMethod.query);
                 });
             })
         });
@@ -56,8 +49,8 @@ export class TestHelper {
 
 
     static async query(stub: ChaincodeMockStub, queryObject: QueryObject) {
-        const response: ChaincodeReponse = await stub.mockInvoke('test', [queryObject.fcn].concat(queryObject.args));
-        expect(Transform.bufferToObject(response.payload)['args']).to.deep.equal(queryObject.expected);
+        const response: ChaincodeReponse = await stub.mockInvoke('test', [queryObject.fcn].concat(queryObject.args))
+        expect(Transform.bufferToObject(response.payload)).to.deep.equal(queryObject.expected);
     }
 
 }

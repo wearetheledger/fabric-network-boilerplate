@@ -3,6 +3,14 @@ import { Iterators, KV } from 'fabric-shim';
 
 export class Transform {
 
+    /**
+     * serialize payload
+     * 
+     * @static
+     * @param {*} value 
+     * @returns 
+     * @memberof Transform
+     */
     public static serialize(value: any) {
         if (_.isDate(value) || _.isString(value)) {
 
@@ -12,6 +20,14 @@ export class Transform {
         return Buffer.from(JSON.stringify(this.normalizePayload(value)));
     };
 
+    /**
+     * parse string to object
+     * 
+     * @static
+     * @param {Buffer} buffer 
+     * @returns {(object | undefined)} 
+     * @memberof Transform
+     */
     public static bufferToObject(buffer: Buffer): object | undefined {
         if (buffer == null) {
             return;
@@ -25,6 +41,14 @@ export class Transform {
         return JSON.parse(bufferString);
     };
 
+    /**
+     * bufferToDate
+     * 
+     * @static
+     * @param {Buffer} buffer 
+     * @returns {(Date | undefined)} 
+     * @memberof Transform
+     */
     public static bufferToDate(buffer: Buffer): Date | undefined {
         if (buffer == null) {
 
@@ -93,7 +117,7 @@ export class Transform {
         while (res == null || !res.done) {
             res = await iterator.next();
             if (res.value && res.value.value.toString()) {
-                let parsedItem: { key: string, value: any } = {key: '', value: {}};
+                let parsedItem: { key: string, value: any } = { key: '', value: {} };
 
                 parsedItem.key = res.value.key;
 
@@ -111,6 +135,14 @@ export class Transform {
         return allResults;
     };
 
+    /**
+     * normalizePayload
+     * 
+     * @static
+     * @param {*} value 
+     * @returns {*} 
+     * @memberof Transform
+     */
     public static normalizePayload(value: any): any {
 
         if (_.isDate(value)) {

@@ -7,7 +7,7 @@
     "scripts": {
         "build": "tsc",
         "lint": "tslint --fix -c tslint.json './src/**/*.ts'",
-        "test": "npm run lint && mocha -r ts-node/register src/**/tests/*/**.ts --reporter spec",
+        "test": "npm run lint && mocha -r ts-node/register src/**/*.spec.ts --reporter spec",
         "clean": "rm -rf node_modules && rm -rf dist",
         "start": "node dist/index.js"
     },

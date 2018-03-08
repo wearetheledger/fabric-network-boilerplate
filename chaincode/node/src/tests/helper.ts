@@ -1,7 +1,8 @@
 /* tslint:disable */
+
 import { ChaincodeReponse } from 'fabric-shim';
 import { expect } from 'chai';
-import { ChaincodeMockStub, Transform } from "@theledger/fabric-chaincode-utils";
+import { ChaincodeMockStub, Transform } from '@theledger/fabric-chaincode-utils';
 
 export interface InvokeObject {
     fcn: string;
@@ -27,7 +28,7 @@ export class TestHelper {
 
         const stub: ChaincodeMockStub = new ChaincodeMockStub('mock', chainCode);
 
-        describe('Test ChainMethods', () => {
+        describe('Test Chaincode using Helper', () => {
             chainMethods.forEach(chainMethod => {
                 it(chainMethod.itShouldInvoke, async () => {
                     await this.invoke(stub, chainMethod.invoke);

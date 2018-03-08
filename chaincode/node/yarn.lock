@@ -2,11 +2,29 @@
 # yarn lockfile v1
 
 
-"@theledger/couchdb-query-engine@2.4.0":
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/@theledger/couchdb-query-engine/-/couchdb-query-engine-2.4.0.tgz#70f7805b228acdfcb25ca0700d16ae7a4aab0846"
+"@theledger/couchdb-query-engine@^2.4.4":
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@theledger/couchdb-query-engine/-/couchdb-query-engine-2.4.4.tgz#e2860bbb594cecb9f79e8ae0b333db5fadb015b4"
   dependencies:
     babel-runtime "^6.26.0"
+
+"@theledger/fabric-chaincode-utils@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@theledger/fabric-chaincode-utils/-/fabric-chaincode-utils-1.0.0.tgz#df02fdd4cf6ec6815c7ea0dd6e26d2cf14e32f0c"
+  dependencies:
+    "@theledger/couchdb-query-engine" "^2.4.4"
+    "@types/lodash" "^4.14.104"
+    fabric-shim "^1.1.0-alpha"
+    google-protobuf "^3.5.0"
+    lodash "^4.17.5"
+    winston "^2.4.0"
+
+"@theledger/fabric-shim-types@https://github.com/wearetheledger/fabric-shim-types":
+  version "1.0.3"
+  resolved "https://github.com/wearetheledger/fabric-shim-types#4b8844769c2439303954d03f5c8a66dc0a795ed4"
+  dependencies:
+    "@types/google-protobuf" "^3.2.7"
+    "@types/log4js" "^2.3.5"
 
 "@types/chai@^4.1.2":
   version "4.1.2"
@@ -25,6 +43,12 @@
 "@types/lodash@^4.14.104":
   version "4.14.104"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.104.tgz#53ee2357fa2e6e68379341d92eb2ecea4b11bb80"
+
+"@types/log4js@^2.3.5":
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/@types/log4js/-/log4js-2.3.5.tgz#4d1e56da53d3c1820c08e9cd5092e68c3e1e822f"
+  dependencies:
+    log4js "*"
 
 "@types/mocha@^2.2.48":
   version "2.2.48"
@@ -861,7 +885,7 @@ eyes@0.1.x:
   version "0.1.8"
   resolved "https://registry.yarnpkg.com/eyes/-/eyes-0.1.8.tgz#62cf120234c683785d902348a800ef3e0cc20bc0"
 
-fabric-shim@1.1.0-alpha:
+fabric-shim@1.1.0-alpha, fabric-shim@^1.1.0-alpha:
   version "1.1.0-alpha"
   resolved "https://registry.yarnpkg.com/fabric-shim/-/fabric-shim-1.1.0-alpha.tgz#00e17692d5b71f5528295aa3371f7196f12c361c"
   dependencies:
@@ -1641,7 +1665,7 @@ lodash@^4.0.0, lodash@^4.14.0, lodash@^4.15.0, lodash@^4.17.5:
   version "4.17.5"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.5.tgz#99a92d65c0272debe8c96b6057bc8fbfa3bed511"
 
-log4js@^2.2.0, log4js@^2.5.3:
+log4js@*, log4js@^2.2.0:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/log4js/-/log4js-2.5.3.tgz#38bb7bde5e9c1c181bd75e8bc128c5cd0409caf1"
   dependencies:

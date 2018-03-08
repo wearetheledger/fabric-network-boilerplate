@@ -1,5 +1,5 @@
 import { TestHelper, ChainMethod } from './helper';
-import { MyChaincode } from '../../../MyChaincode';
+import { MyChaincode } from '../MyChaincode';
 
 const chaincode = new MyChaincode();
 

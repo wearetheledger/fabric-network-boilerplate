@@ -1,10 +1,7 @@
 /* tslint:disable */
 import { ChaincodeReponse } from 'fabric-shim';
 import { expect } from 'chai';
-import { ChaincodeMockStub } from '../../src/mocking/ChaincodeMockStub';
-import { Transform } from '../../src/utils/datatransform';
-
-process.setMaxListeners(0);
+import { ChaincodeMockStub, Transform } from "@theledger/fabric-chaincode-utils";
 
 export interface InvokeObject {
     fcn: string;

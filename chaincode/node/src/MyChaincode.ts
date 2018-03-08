@@ -1,8 +1,6 @@
 import shim = require('fabric-shim');
-import { TransactionHelper } from './node-chaincode-utils/src/ChaincodeStub';
 import { Stub } from 'fabric-shim';
-import { Chaincode } from './node-chaincode-utils/src/Chaincode';
-import { Helpers } from './node-chaincode-utils/src/utils/helpers';
+import { Chaincode, Helpers, TransactionHelper } from '@theledger/fabric-chaincode-utils';
 
 export class MyChaincode extends Chaincode {
 

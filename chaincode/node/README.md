@@ -1,12 +1,3 @@
-# HyperledgerFabric Node Utils [![Build Status](https://travis-ci.org/wearetheledger/hlf-node-utils.svg?branch=master)](https://travis-ci.org/wearetheledger/hlf-node-utils)
+## My nodejs chaincode
 
-
-- Logging & ErrorHandling
-- Hyperledger Fabric Client Wrapper
-- Yup validation & Request helper
-- Transformations
-- Pusher typescript wrapper 
-
-
-
-`all custom typings should include a linting disabler /* tslint:disable */`
+This package uses [@theledger/fabric-node-chaincode-utils](https://github.com/wearetheledger/fabric-node-chaincode-utils) for easy chaincode development and testing.

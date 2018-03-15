@@ -4,6 +4,7 @@ This repo is a snippet of the fabcar [fabric sample](https://github.com/hyperled
 ## Starting 
 Starting this network requires you to run following command. This will automatically setup your docker network using docker-compose and install your chaincode.
 ```bash
+./scripts/fabric-preload.sh
 ./startFabric.sh
 ```
 

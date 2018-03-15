@@ -11,5 +11,7 @@ Starting this network requires you to run following command. This will automatic
 ./startFabric.sh
 ```
 
+## Writing chaincode
+For writing chaincode we're using our package [fabric-node-chaincode-utils](https://github.com/wearetheledger/fabric-node-chaincode-utils), which makes writing chaincode much faster and easier.
 ## Testing
-For testing we're using our package [fabric-node-chaincode-utils](https://github.com/wearetheledger/fabric-node-chaincode-utils) in wich we write a mock chaincode stub for imitating the way the actual stub handles the interaction with Hyperledger Fabric.
+For testing we're using our package [fabric-mock-stub](https://github.com/wearetheledger/fabric-mock-stub) in wich we wrote a mock chaincode stub for imitating the way the actual stub handles the interaction with Hyperledger Fabric.

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-export VERSION=${1:-1.0.0}
+export VERSION=${1:-1.1.0-rc1}
 export ARCH=$(echo "$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/windows/')-$(uname -m | sed 's/x86_64/amd64/g')" | awk '{print tolower($0)}')
 #Set MARCH variable i.e ppc64le,s390x,x86_64,i386
 MARCH=`uname -m`
@@ -30,6 +30,13 @@ dockerCaPull() {
 
 : ${CA_TAG:="$MARCH-$VERSION"}
 : ${FABRIC_TAG:="$MARCH-$VERSION"}
+
+: ${COUCH_TAG:="$MARCH-1.0.6"}
+
+echo "===> We pull couchdb images manually because their version is off"
+docker pull hyperledger/fabric-couchdb:$COUCH_TAG
+docker tag hyperledger/fabric-couchdb:$COUCH_TAG hyperledger/fabric-couchdb
+
 
 echo "===> Pulling fabric Images"
 dockerFabricPull ${FABRIC_TAG}

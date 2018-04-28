@@ -85,6 +85,28 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) sc.Response 
 	// Retrieve the requested Smart Contract function and arguments
 	function, args := APIstub.GetFunctionAndParameters()
 	// Route to the appropriate handler function to interact with the ledger appropriately
+
+	id, err := cid.GetID(APIstub)
+	
+		fmt.Print("id",id)
+
+	mspID, err := cid.GetX509Certificate(APIstub)
+		fmt.Print("mspID ",mspID)
+		if err != nil {
+			fmt.Print("err",err)
+		 }
+	
+		val, ok, err := cid.GetAttributeValue(APIstub, "attr1")
+		if err != nil {
+			fmt.Print("err",err)
+		 }
+	
+		if !ok {
+		   // The client identity does not possess the attribute
+		   fmt.Print(val)
+		}
+
+
 	if function == "queryCar" {
 		return s.queryCar(APIstub, args)
 	} else if function == "initLedger" {

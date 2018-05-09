@@ -5,7 +5,7 @@ export class MyChaincode extends Chaincode {
 
     async queryCar(stubHelper: StubHelper, args: string[]): Promise<any> {
 
-        const verifiedArgs = await Helpers.checkArgs<{ key: string }>(args, Yup.object()
+        const verifiedArgs = await Helpers.checkArgs<{ key: string }>(args[0], Yup.object()
             .shape({
                 key: Yup.string().required(),
             }));
@@ -69,7 +69,7 @@ export class MyChaincode extends Chaincode {
         }, {
             make: 'Holden',
             model: 'Barina',
-            color: 'brown',
+            color: 'violet',
             owner: 'Shotaro'
         }];
 
@@ -84,7 +84,7 @@ export class MyChaincode extends Chaincode {
     }
 
     async createCar(stubHelper: StubHelper, args: string[]) {
-        const verifiedArgs = await Helpers.checkArgs<any>(args, Yup.object()
+        const verifiedArgs = await Helpers.checkArgs<any>(args[0], Yup.object()
             .shape({
                 key: Yup.string().required(),
                 make: Yup.string().required(),
@@ -113,9 +113,25 @@ export class MyChaincode extends Chaincode {
 
     }
 
+    async richQueryAllCars(stubHelper: StubHelper, args: string[]): Promise<any> {
+
+        return await stubHelper.getQueryResultAsList({
+            selector: {
+                docType: 'car'
+            }
+        });
+
+    }
+
+    async getCarHistory(stubHelper: StubHelper, args: string[]): Promise<any> {
+
+        return await stubHelper.getHistoryForKeyAsList('CAR0');
+
+    }
+
     async changeCarOwner(stubHelper: StubHelper, args: string[]) {
 
-        const verifiedArgs = await Helpers.checkArgs<{ key: string; owner: string }>(args, Yup.object()
+        const verifiedArgs = await Helpers.checkArgs<{ key: string; owner: string }>(args[0], Yup.object()
             .shape({
                 key: Yup.string().required(),
                 owner: Yup.string().required(),

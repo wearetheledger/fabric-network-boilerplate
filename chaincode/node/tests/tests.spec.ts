@@ -7,6 +7,8 @@ import { expect } from "chai";
 
 const chaincode = new MyChaincode();
 
+let stubWithInit;
+
 describe('Test MyChaincode', () => {
 
     it("Should init without issues", async () => {
@@ -18,13 +20,13 @@ describe('Test MyChaincode', () => {
     });
 
     it("Should be able to init and query all cars", async () => {
-        const stub = new ChaincodeMockStub("MyMockStub", chaincode);
+        stubWithInit = new ChaincodeMockStub("MyMockStub", chaincode);
 
-        const response = await stub.mockInvoke("txID1", ["initLedger"]);
+        const response = await stubWithInit.mockInvoke("txID1", ["initLedger"]);
 
         expect(response.status).to.eql(200);
 
-        const queryResponse = await stub.mockInvoke("txID2", ["queryAllCars"]);
+        const queryResponse = await stubWithInit.mockInvoke("txID2", ["queryAllCars"]);
 
         expect(Transform.bufferToObject(queryResponse.payload)).to.deep.eq([
             {
@@ -93,7 +95,7 @@ describe('Test MyChaincode', () => {
             {
                 make: 'Holden',
                 model: 'Barina',
-                color: 'brown',
+                color: 'violet',
                 owner: 'Shotaro',
                 docType: 'car'
             }
@@ -103,11 +105,19 @@ describe('Test MyChaincode', () => {
     it("Should be able to add a car", async () => {
         const stub = new ChaincodeMockStub("MyMockStub", chaincode);
 
-        const response = await stub.mockInvoke("tx1", ['createCar', `CAR0`, `prop1`, `prop2`, `prop3`, `owner`]);
+        const response = await stub.mockInvoke("tx1", ['createCar', JSON.stringify({
+            key: 'CAR0',
+            make: "prop1",
+            model: "prop2",
+            color: "prop3",
+            owner: 'owner'
+        })]);
 
         expect(response.status).to.eql(200)
 
-        const response = await stub.mockInvoke("tx1", ['queryCar', `CAR0`]);
+        const response = await stub.mockInvoke("tx1", ['queryCar', JSON.stringify({
+            key: `CAR0`
+        })]);
 
         expect(Transform.bufferToObject(response.payload)).to.deep.eq({
             'make': 'prop1',
@@ -121,11 +131,19 @@ describe('Test MyChaincode', () => {
     it("Should be able to update a car", async () => {
         const stub = new ChaincodeMockStub("MyMockStub", chaincode);
 
-        const response = await stub.mockInvoke("tx1", ['createCar', `CAR0`, `prop1`, `prop2`, `prop3`, `owner`]);
+        const response = await stub.mockInvoke("tx1", ['createCar', JSON.stringify({
+            key: 'CAR0',
+            make: "prop1",
+            model: "prop2",
+            color: "prop3",
+            owner: 'owner'
+        })]);
 
         expect(response.status).to.eql(200);
 
-        const response = await stub.mockInvoke("tx2", ['queryCar', `CAR0`]);
+        const response = await stub.mockInvoke("tx2", ['queryCar', JSON.stringify({
+            key: `CAR0`
+        })]);
 
         expect(Transform.bufferToObject(response.payload)).to.deep.eq({
             'make': 'prop1',
@@ -135,13 +153,37 @@ describe('Test MyChaincode', () => {
             'docType': 'car'
         });
 
-        const response = await stub.mockInvoke("tx3", ['changeCarOwner', `CAR0`, 'newOwner']);
+        const response = await stub.mockInvoke("tx3", ['changeCarOwner', JSON.stringify({
+            key: `CAR0`,
+            owner: 'newOwner'
+        })]);
 
         expect(response.status).to.eql(200);
 
-        const response = await stub.mockInvoke("tx4", ['queryCar', `CAR0`]);
+        const response = await stub.mockInvoke("tx4", ['queryCar', JSON.stringify({
+            key: `CAR0`
+        })]);
 
 
         expect(Transform.bufferToObject(response.payload).owner).to.eq("newOwner")
+    });
+
+    it("Should be able to run rich query", async () => {
+        const response = await stubWithInit.mockInvoke("tx1", ['richQueryAllCars']);
+
+        expect(response.status).to.eql(200);
+
+        expect(Transform.bufferToObject(response.payload)).to.be.length(10);
+    });
+
+    it("Should be able to run gethistoryForKey", async () => {
+        const response = await stubWithInit.mockInvoke("tx1", ['getCarHistory']);
+
+        expect(response.status).to.eql(200);
+
+        console.log(Transform.bufferToObject(response.payload))
+
+        expect(Transform.bufferToObject(response.payload)).to.be.length(1);
+        expect(Transform.bufferToObject(response.payload)[0].value.owner).to.eq("Tomoko")
     });
 });

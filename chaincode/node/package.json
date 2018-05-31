@@ -24,7 +24,7 @@
   "dependencies": {
     "@theledger/fabric-chaincode-utils": "^2.0.0",
     "@types/lodash": "^4.14.104",
-    "fabric-shim": "1.1.1",
+    "fabric-shim": "^1.1.2",
     "lodash": "^4.17.5",
     "winston": "^2.4.0",
     "yup": "^0.24.1"

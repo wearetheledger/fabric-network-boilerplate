@@ -3,13 +3,14 @@
     "rootDir": "./src",
     "suppressImplicitAnyIndexErrors": true,
     "noImplicitAny": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "target": "es5",
     "module": "commonjs",
-    "declaration": true,
+    "declaration": false,
     "outDir": "./dist",
     "types": [
-      "@theledger/fabric-shim-types"
+      "@theledger/fabric-shim-types",
+      "@theledger/fabric-shim-crypto-types"
     ],
     "typeRoots": [
       "./node_modules/@types"

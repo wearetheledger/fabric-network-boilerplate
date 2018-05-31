@@ -1,4 +1,4 @@
-import { Chaincode, ChaincodeError, Helpers, StubHelper } from '@theledger/fabric-chaincode-utils';
+import { Chaincode, Helpers, NotFoundError, StubHelper, Transform } from '@theledger/fabric-chaincode-utils';
 import * as Yup from 'yup';
 
 export class MyChaincode extends Chaincode {
@@ -10,10 +10,19 @@ export class MyChaincode extends Chaincode {
                 key: Yup.string().required(),
             }));
 
-        const car = stubHelper.getStateAsObject(verifiedArgs.key); //get the car from chaincode state
+        const test = (await stubHelper.getStub().getState(verifiedArgs.key));
+
+        console.log(await stubHelper.getStub().getTransient().get('encrypt-key').toString('utf8'));
+        console.log(test.toString('utf8'));
+        const decrypted = await (<any>stubHelper.getChaincodeCrypto()).decrypt(test);
+
+        console.log(decrypted instanceof Buffer);
+        console.log(Transform.bufferToObject(decrypted));
+
+        const car = await stubHelper.getStateAsObject(verifiedArgs.key); //get the car from chaincode state
 
         if (!car) {
-            throw new ChaincodeError('Car does not exist');
+            throw new NotFoundError('Car does not exist');
         }
 
         return car;
@@ -94,14 +103,16 @@ export class MyChaincode extends Chaincode {
             }));
 
         let car = {
-            docType: 'car',
+            docType: 'SHOULD BE ENCRYPTED',
             make: verifiedArgs.make,
             model: verifiedArgs.model,
             color: verifiedArgs.color,
             owner: verifiedArgs.owner
         };
 
-        await stubHelper.putState(verifiedArgs.key, car);
+        const encrypted = stubHelper.getChaincodeCrypto().encrypt(JSON.stringify(car));
+
+        await stubHelper.getStub().putState(verifiedArgs.key, encrypted);
     }
 
     async queryAllCars(stubHelper: StubHelper, args: string[]): Promise<any> {

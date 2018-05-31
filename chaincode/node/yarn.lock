@@ -8,9 +8,9 @@
   dependencies:
     babel-runtime "^6.26.0"
 
-"@theledger/fabric-chaincode-utils@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@theledger/fabric-chaincode-utils/-/fabric-chaincode-utils-2.0.0.tgz#2a4112652f915e4d6543307647f5ce95a0c9a73e"
+"@theledger/fabric-chaincode-utils@^2.0.8":
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/@theledger/fabric-chaincode-utils/-/fabric-chaincode-utils-2.0.8.tgz#8f819fd9a42fb062218d71a38699b1247abd8211"
   dependencies:
     "@theledger/couchdb-query-engine" "^2.4.4"
     "@types/lodash" "^4.14.104"
@@ -32,6 +32,13 @@
     google-protobuf "^3.5.0"
     lodash "^4.17.5"
     winston "^2.4.0"
+
+"@theledger/fabric-shim-crypto-types@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@theledger/fabric-shim-crypto-types/-/fabric-shim-crypto-types-1.0.4.tgz#3d282fecc6a5bcf65536e209dcfbd2f9ca8cde45"
+  dependencies:
+    "@types/google-protobuf" "^3.2.7"
+    "@types/log4js" "^2.3.5"
 
 "@theledger/fabric-shim-types@^1.0.4":
   version "1.0.4"
@@ -933,17 +940,6 @@ fabric-shim-crypto@^1.1.2:
   dependencies:
     elliptic "^6.4.0"
     jsrsasign "^8.0.4"
-
-fabric-shim@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/fabric-shim/-/fabric-shim-1.1.1.tgz#427ea40cf0962a9969a92674319018cd3caa6762"
-  dependencies:
-    command-line-args "^4.0.6"
-    grpc "1.10.1"
-    jsrsasign "^8.0.4"
-    utf8 "2.1.2"
-    winston "^2.4.1"
-    x509 "^0.3.2"
 
 fabric-shim@^1.1.0-alpha:
   version "1.1.0-alpha"

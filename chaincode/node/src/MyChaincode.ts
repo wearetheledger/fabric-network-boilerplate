@@ -1,4 +1,4 @@
-import { Chaincode, ChaincodeError, Helpers, StubHelper } from '@theledger/fabric-chaincode-utils';
+import { Chaincode, Helpers, NotFoundError, StubHelper } from '@theledger/fabric-chaincode-utils';
 import * as Yup from 'yup';
 
 export class MyChaincode extends Chaincode {
@@ -10,10 +10,25 @@ export class MyChaincode extends Chaincode {
                 key: Yup.string().required(),
             }));
 
-        const car = stubHelper.getStateAsObject(verifiedArgs.key); //get the car from chaincode state
+        const car = await stubHelper.getStateAsObject(verifiedArgs.key); //get the car from chaincode state
 
         if (!car) {
-            throw new ChaincodeError('Car does not exist');
+            throw new NotFoundError('Car does not exist');
+        }
+
+        return car;
+    }
+
+    async queryPrivateCar(stubHelper: StubHelper, args: string[]) {
+
+        const verifiedArgs = await Helpers.checkArgs<any>(args[0], Yup.object()
+            .shape({
+                key: Yup.string().required(),
+            }));
+        const car = await stubHelper.getStateAsObject(verifiedArgs.key, {privateCollection: 'testCollection'});
+
+        if (!car) {
+            throw new NotFoundError('Car does not exist');
         }
 
         return car;
@@ -102,6 +117,28 @@ export class MyChaincode extends Chaincode {
         };
 
         await stubHelper.putState(verifiedArgs.key, car);
+    }
+
+    async createPrivateCar(stubHelper: StubHelper, args: string[]) {
+
+        const verifiedArgs = await Helpers.checkArgs<any>(args[0], Yup.object()
+            .shape({
+                key: Yup.string().required(),
+                make: Yup.string().required(),
+                model: Yup.string().required(),
+                color: Yup.string().required(),
+                owner: Yup.string().required(),
+            }));
+
+        let car = {
+            docType: 'car',
+            make: verifiedArgs.make,
+            model: verifiedArgs.model,
+            color: verifiedArgs.color,
+            owner: verifiedArgs.owner
+        };
+
+        await stubHelper.putState(verifiedArgs.key, car, {privateCollection: 'testCollection'});
     }
 
     async queryAllCars(stubHelper: StubHelper, args: string[]): Promise<any> {

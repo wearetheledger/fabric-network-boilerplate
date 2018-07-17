@@ -1,11 +1,11 @@
 {
   "name": "fabric-network-boilerplate",
-  "version": "1.0.0",
+  "version": "1.34.0",
   "description": "basic network startup",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "npm run clean && tsc",
+    "build": "tsc",
     "lint": "tslint --fix -c tslint.json './src/**/*.ts'",
     "test": "npm run lint && mocha -r ts-node/register tests/**/*.spec.ts --reporter spec",
     "clean": "rm -rf dist",
@@ -22,16 +22,17 @@
   },
   "homepage": "https://github.com/wearetheledger/fabric-network-boilerplate#readme",
   "dependencies": {
-    "@theledger/fabric-chaincode-utils": "^2.0.0",
+    "@theledger/fabric-chaincode-utils": "^3.0.2",
     "@types/lodash": "^4.14.104",
-    "fabric-shim": "^1.1.2",
+    "fabric-shim": "^1.2.0",
     "lodash": "^4.17.5",
     "winston": "^2.4.0",
     "yup": "^0.24.1"
   },
   "devDependencies": {
-    "@theledger/fabric-mock-stub": "^1.2.1",
-    "@theledger/fabric-shim-types": "^1.0.4",
+    "@theledger/fabric-mock-stub": "^2.0.1",
+    "@theledger/fabric-shim-crypto-types": "^1.0.4",
+    "@theledger/fabric-shim-types": "^2.0.7",
     "@types/chai": "^4.1.2",
     "@types/express-serve-static-core": "4.0.49",
     "@types/mocha": "^2.2.48",

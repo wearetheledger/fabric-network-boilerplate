@@ -13,9 +13,8 @@ export MSYS_NO_PATHCONV=1
 docker-compose -f docker-compose.yml down
 
 #remove old images
-docker ps -aq -f name=dev- | xargs docker rm | true
-docker rmi $(docker images dev-* -q) | true
-
+echo "REMOVE ALL OLD IMAGES"
+docker images | grep "dev-" | awk '{print $3}' | xargs docker rmi -f
 
 docker-compose -f docker-compose.yml up -d ca.example.com orderer.example.com peer0.org1.example.com couchdb
 

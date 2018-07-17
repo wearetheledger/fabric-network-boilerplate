@@ -22,17 +22,17 @@
   },
   "homepage": "https://github.com/wearetheledger/fabric-network-boilerplate#readme",
   "dependencies": {
-    "@theledger/fabric-chaincode-utils": "^2.0.8",
+    "@theledger/fabric-chaincode-utils": "^3.0.2",
     "@types/lodash": "^4.14.104",
-    "fabric-shim": "^1.1.2",
+    "fabric-shim": "^1.2.0",
     "lodash": "^4.17.5",
     "winston": "^2.4.0",
     "yup": "^0.24.1"
   },
   "devDependencies": {
-    "@theledger/fabric-mock-stub": "^1.2.1",
+    "@theledger/fabric-mock-stub": "^2.0.1",
     "@theledger/fabric-shim-crypto-types": "^1.0.4",
-    "@theledger/fabric-shim-types": "^1.0.4",
+    "@theledger/fabric-shim-types": "^2.0.7",
     "@types/chai": "^4.1.2",
     "@types/express-serve-static-core": "4.0.49",
     "@types/mocha": "^2.2.48",

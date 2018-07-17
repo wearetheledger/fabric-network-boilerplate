@@ -1,4 +1,4 @@
-import { Chaincode, Helpers, NotFoundError, StubHelper, Transform } from '@theledger/fabric-chaincode-utils';
+import { Chaincode, Helpers, NotFoundError, StubHelper } from '@theledger/fabric-chaincode-utils';
 import * as Yup from 'yup';
 
 export class MyChaincode extends Chaincode {
@@ -10,16 +10,22 @@ export class MyChaincode extends Chaincode {
                 key: Yup.string().required(),
             }));
 
-        const test = (await stubHelper.getStub().getState(verifiedArgs.key));
-
-        console.log(await stubHelper.getStub().getTransient().get('encrypt-key').toString('utf8'));
-        console.log(test.toString('utf8'));
-        const decrypted = await (<any>stubHelper.getChaincodeCrypto()).decrypt(test);
-
-        console.log(decrypted instanceof Buffer);
-        console.log(Transform.bufferToObject(decrypted));
-
         const car = await stubHelper.getStateAsObject(verifiedArgs.key); //get the car from chaincode state
+
+        if (!car) {
+            throw new NotFoundError('Car does not exist');
+        }
+
+        return car;
+    }
+
+    async queryPrivateCar(stubHelper: StubHelper, args: string[]) {
+
+        const verifiedArgs = await Helpers.checkArgs<any>(args[0], Yup.object()
+            .shape({
+                key: Yup.string().required(),
+            }));
+        const car = await stubHelper.getStateAsObject(verifiedArgs.key, {privateCollection: 'testCollection'});
 
         if (!car) {
             throw new NotFoundError('Car does not exist');
@@ -103,16 +109,36 @@ export class MyChaincode extends Chaincode {
             }));
 
         let car = {
-            docType: 'SHOULD BE ENCRYPTED',
+            docType: 'car',
             make: verifiedArgs.make,
             model: verifiedArgs.model,
             color: verifiedArgs.color,
             owner: verifiedArgs.owner
         };
 
-        const encrypted = stubHelper.getChaincodeCrypto().encrypt(JSON.stringify(car));
+        await stubHelper.putState(verifiedArgs.key, car);
+    }
 
-        await stubHelper.getStub().putState(verifiedArgs.key, encrypted);
+    async createPrivateCar(stubHelper: StubHelper, args: string[]) {
+
+        const verifiedArgs = await Helpers.checkArgs<any>(args[0], Yup.object()
+            .shape({
+                key: Yup.string().required(),
+                make: Yup.string().required(),
+                model: Yup.string().required(),
+                color: Yup.string().required(),
+                owner: Yup.string().required(),
+            }));
+
+        let car = {
+            docType: 'car',
+            make: verifiedArgs.make,
+            model: verifiedArgs.model,
+            color: verifiedArgs.color,
+            owner: verifiedArgs.owner
+        };
+
+        await stubHelper.putState(verifiedArgs.key, car, {privateCollection: 'testCollection'});
     }
 
     async queryAllCars(stubHelper: StubHelper, args: string[]): Promise<any> {

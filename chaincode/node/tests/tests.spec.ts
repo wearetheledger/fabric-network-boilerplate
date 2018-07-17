@@ -128,6 +128,55 @@ describe('Test MyChaincode', () => {
         })
     });
 
+    it("Should be able to add a private car", async () => {
+        const stub = new ChaincodeMockStub("MyMockStub", chaincode);
+
+        const response = await stub.mockInvoke("tx1", ['createPrivateCar', JSON.stringify({
+            key: 'CAR0',
+            make: "prop1",
+            model: "prop2",
+            color: "prop3",
+            owner: 'owner'
+        })]);
+
+        expect(response.status).to.eql(200);
+
+        expect(Transform.bufferToObject(stub.privateCollections["testCollection"]["CAR0"])).to.deep.eq({
+            'make': 'prop1',
+            'model': 'prop2',
+            'color': 'prop3',
+            'owner': 'owner',
+            'docType': 'car'
+        })
+    });
+
+    it("Should be able to get a private car", async () => {
+        const stub = new ChaincodeMockStub("MyMockStub", chaincode);
+
+        const response = await stub.mockInvoke("tx1", ['createPrivateCar', JSON.stringify({
+            key: 'CAR0',
+            make: "prop1",
+            model: "prop2",
+            color: "prop3",
+            owner: 'owner'
+        })]);
+
+        expect(response.status).to.eql(200);
+
+
+        const queryRes = await stub.mockInvoke("tx4", ['queryPrivateCar', JSON.stringify({
+            key: `CAR0`
+        })]);
+
+        expect(Transform.bufferToObject(queryRes.payload)).to.deep.eq({
+            'make': 'prop1',
+            'model': 'prop2',
+            'color': 'prop3',
+            'owner': 'owner',
+            'docType': 'car'
+        })
+    });
+
     it("Should be able to update a car", async () => {
         const stub = new ChaincodeMockStub("MyMockStub", chaincode);
 

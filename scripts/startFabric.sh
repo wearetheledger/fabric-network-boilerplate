@@ -15,7 +15,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # don't rewrite paths for Windows Git Bash users
 export MSYS_NO_PATHCONV=1
 starttime=$(date +%s)
-LANGUAGE=${1:-"golang"}
+LANGUAGE=${1:-"node"}
 CC_SRC_PATH=github.com/fabcar/go
 if [ "$LANGUAGE" = "node" -o "$LANGUAGE" = "NODE" ]; then
     cd $DIR

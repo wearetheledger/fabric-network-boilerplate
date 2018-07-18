@@ -20,12 +20,6 @@ if [ "${dir}" == "scripts" ]; then
         cd ..
 fi
 
-dir=`basename $PWD`
-if [ "${dir}" != "fabric-samples" ]; then
-	echo "You should run this script from the fabric-samples root directory."
-	exit 1
-fi
-
 printHelp() {
   echo "Usage: bootstrap.sh [<version>] [<ca_version>] [<thirdparty_version>][-d -b]"
   echo

@@ -4,7 +4,7 @@ This repo is a snippet of the fabcar [fabric sample](https://github.com/hyperled
 ## Starting 
 Before starting, you will need to pull all the images of Hyperledger fabric to your desktop and tag them as latest. We included a script to do this. By default it will try to pull in `1.2.0` but you can pull a custom version by adding the version as a parameter.
 ```bash
-./scripts/fabric-preload.sh [optional_custom_version]
+./scripts/bootstrap.sh [optional_custom_version]
 ```
 Starting this network requires you to run following command. This will automatically setup your docker network using docker-compose and install your chaincode.
 ```bash

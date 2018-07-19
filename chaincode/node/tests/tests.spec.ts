@@ -230,8 +230,6 @@ describe('Test MyChaincode', () => {
 
         expect(response.status).to.eql(200);
 
-        console.log(Transform.bufferToObject(response.payload))
-
         expect(Transform.bufferToObject(response.payload)).to.be.length(1);
         expect(Transform.bufferToObject(response.payload)[0].value.owner).to.eq("Tomoko")
     });

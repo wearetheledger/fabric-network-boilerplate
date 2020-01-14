@@ -9,7 +9,6 @@
     "declaration": false,
     "outDir": "./dist",
     "types": [
-      "@theledger/fabric-shim-types",
       "@theledger/fabric-shim-crypto-types"
     ],
     "typeRoots": [
